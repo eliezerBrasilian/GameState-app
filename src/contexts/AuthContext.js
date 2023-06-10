@@ -8,6 +8,11 @@ export default function AuthProvider({children}) {
   useEffect(() => {
     loadData();
   }, []);
+  async function saveGame(game) {
+    const response = await api.post('/game', game);
+    console.log(response.data);
+    console.log(response.data.success);
+  }
   async function loadData() {
     const token = await AsyncStorage.getItem('@token');
     if (token) {
@@ -52,7 +57,7 @@ export default function AuthProvider({children}) {
     }
   }
   return (
-    <AuthContext.Provider value={{user, signed: !!user, login}}>
+    <AuthContext.Provider value={{user, signed: !!user, login, saveGame}}>
       {children}
     </AuthContext.Provider>
   );
