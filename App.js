@@ -1,6 +1,9 @@
 import React from 'react';
 import {Button, View} from 'react-native';
 import axios from 'axios';
+import {NavigationContainer} from '@react-navigation/native';
+import AuthProvider from './src/contexts/AuthContext';
+import Routes from './src/routes';
 function App() {
   let usuario = {
     email: 'gameteste@game.com',
@@ -19,25 +22,13 @@ function App() {
         console.log('error: ' + JSON.stringify(e.status));
       });
   }
-  async function login() {
-    await axios
-      .post('http://192.168.100.31:80/user/login', {
-        email: 'xarles.com',
-        senha: '12345',
-      })
-      .then(resp => {
-        console.log('sucesso');
-        console.log(resp.data);
-      })
-      .catch(e => {
-        console.log('error: ' + JSON.stringify(e.status));
-      });
-  }
+
   return (
-    <View>
-      <Button onPress={cadastrar} title="Cadastrar" />
-      <Button onPress={login} title="login" />
-    </View>
+    <NavigationContainer>
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
+    </NavigationContainer>
   );
 }
 
