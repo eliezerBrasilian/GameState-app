@@ -15,25 +15,30 @@ export default function AuthProvider({children}) {
   }
   async function loadData() {
     const token = await AsyncStorage.getItem('@token');
+    const ud = await AsyncStorage.getItem('@userData');
+    if (ud) {
+      console.log('usuario ja existe');
+      setUser(JSON.parse(ud));
+    }
     if (token) {
       console.log('token existe');
-      const response = await api
-        .get('/me', {
+      try {
+        const response = await api.get('/me', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        })
-        .catch(() => {
-          setUser(null);
         });
-
-      api.defaults.headers['Authorization'] = `Bearer ${token}`;
-      setUser(response.data);
-      console.log('usuario setado');
-      console.log(response.data);
+        api.defaults.headers['Authorization'] = `Bearer ${token}`;
+        setUser(response.data);
+        console.log('usuario setado');
+        console.log(response.data);
+      } catch (e) {
+        console.log('sem internet');
+      }
     }
   }
   async function login(email, senha) {
+    console.log('clicou em login');
     try {
       const response = await api.post('/user/login', {
         email: 'xarles.com',
@@ -52,6 +57,7 @@ export default function AuthProvider({children}) {
       api.defaults.headers['Authorization'] = `Bearer ${token}`;
       setUser(data);
       await AsyncStorage.setItem('@token', token);
+      await AsyncStorage.setItem('@userData', JSON.stringify(data));
     } catch (e) {
       console.log('Erro ao logar: ' + e);
     }
