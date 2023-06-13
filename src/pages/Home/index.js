@@ -1,34 +1,41 @@
-import {View, Button, FlatList, Image} from 'react-native';
+import {View, FlatList, ActivityIndicator} from 'react-native';
 import {useContext, useEffect, useState} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
 import api from '../../services/api';
 import Header from './Header';
 import Card from './Card';
 import NoConnection from './NoConnection';
+import {colors} from '../../assets/colors';
+colors;
 function Home() {
   const {saveGame, user} = useContext(AuthContext);
   const [games, setGames] = useState([]);
-  const [connection, setConnection] = useState(false);
+  const [connection, setConnection] = useState(true);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     loadGames();
   }, []);
 
   async function loadGames() {
-    try {
-      const response = await api.get(`/games/${user.id}`, {
+    setLoading(true);
+    await api
+      .get(`/games/${user.id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
+      })
+      .then(response => {
+        console.log(response.data.games);
+        console.log(games.length);
+        setLoading(false);
+        setGames(response.data.games);
+      })
+      .catch(e => {
+        setLoading(false);
+        setConnection(false);
+        console.log('erro ao trazer jogos: ' + e);
       });
-      console.log(response.data.games);
-      setGames(response.data.games);
-      setConnection(true);
-    } catch (e) {
-      setConnection(false);
-      console.log('erro ao trazer jogos: ' + e);
-    }
-    console.log(games.length);
   }
 
   if (!connection) {
@@ -57,11 +64,22 @@ function Home() {
           flex: 1,
         }}>
         <Header />
-        <FlatList
-          data={games}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={item => <Card data={item} />}
-        />
+        {isLoading ? (
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+            }}>
+            <ActivityIndicator size={40} color={colors.game_title} />
+          </View>
+        ) : (
+          <FlatList
+            data={games}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={item => <Card data={item} />}
+          />
+        )}
       </View>
     );
   }

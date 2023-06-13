@@ -112,6 +112,7 @@ const CardView = styled.View`
   align-items: center;
   margin-left: 14px;
   margin-right: 14px;
+  margin-bottom: 10px;
 `;
 const Cover = styled.View`
   height: 300px;

@@ -45,7 +45,7 @@ export default function AuthProvider({children}) {
         senha: '12345',
       });
       console.log(response);
-      const {id, nome, email, isPremium, token} = response.data;
+      const {id, nome, email, isPremium, token, username} = response.data;
 
       const data = {
         id,
@@ -53,6 +53,7 @@ export default function AuthProvider({children}) {
         email,
         isPremium,
         token,
+        username,
       };
       api.defaults.headers['Authorization'] = `Bearer ${token}`;
       setUser(data);

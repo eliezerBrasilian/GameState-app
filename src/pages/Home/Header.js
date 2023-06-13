@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import {View, TouchableOpacity} from 'react-native';
+import {useContext} from 'react';
+import {AuthContext} from '../../contexts/AuthContext';
 function Header() {
+  const {user} = useContext(AuthContext);
   return (
     <HeaderView>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -8,8 +11,12 @@ function Header() {
           <ProfileIcon source={require('../../assets/img/profile_.png')} />
         </TouchableOpacity>
         <View style={{marginLeft: 10}}>
-          <Name>Artur Silva</Name>
-          <Username>@arturgamer</Username>
+          <Name>{user.nome}</Name>
+          {user.username === undefined ? (
+            <Username>@arturgamer</Username>
+          ) : (
+            <Username>@{user.username}</Username>
+          )}
         </View>
       </View>
       <PremiumIcon source={require('../../assets/img/premium_.png')} />
