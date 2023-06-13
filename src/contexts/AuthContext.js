@@ -5,6 +5,7 @@ export const AuthContext = createContext({});
 
 export default function AuthProvider({children}) {
   const [user, setUser] = useState(null);
+  const [updateInfo, setUpdateInfo] = useState(false);
   useEffect(() => {
     loadData();
   }, []);
@@ -64,7 +65,15 @@ export default function AuthProvider({children}) {
     }
   }
   return (
-    <AuthContext.Provider value={{user, signed: !!user, login, saveGame}}>
+    <AuthContext.Provider
+      value={{
+        user,
+        signed: !!user,
+        login,
+        saveGame,
+        updateInfo,
+        setUpdateInfo,
+      }}>
       {children}
     </AuthContext.Provider>
   );

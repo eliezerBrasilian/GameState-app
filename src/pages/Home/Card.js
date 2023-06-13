@@ -1,9 +1,12 @@
 import styled from 'styled-components';
 import {View, TouchableOpacity, Image} from 'react-native';
-import {useState} from 'react';
+import {useState, useContext} from 'react';
+import {AuthContext} from '../../contexts/AuthContext';
 import {colors} from '../../assets/colors';
 import {format} from 'date-fns';
+import api from '../../services/api';
 function Card(props) {
+  const {updateInfo, setUpdateInfo} = useContext(AuthContext);
   let {nome, capa, id, finishedDate} = props.data.item;
   const [gameName] = useState(nome);
   const [gameCover] = useState(capa);
@@ -12,6 +15,19 @@ function Card(props) {
     format(new Date(finishedDate), 'dd/MM/yyyy HH:mm:ss'),
   );
 
+  async function deleteGame() {
+    console.log('deletar: ' + gameId);
+    await api
+      .post(`/game/${gameId}`)
+      .then(response => {
+        console.log(response.data);
+        setUpdateInfo(!updateInfo);
+      })
+      .catch(e => {
+        console.log(e);
+        setUpdateInfo(!updateInfo);
+      });
+  }
   return (
     <CardView>
       <Cover>
@@ -54,7 +70,7 @@ function Card(props) {
             Editar
           </Title>
         </Button>
-        <Button cor={colors.game_title}>
+        <Button cor={colors.game_title} onPress={deleteGame}>
           <Title cor="#fff" size={17}>
             Apagar
           </Title>

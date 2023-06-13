@@ -8,14 +8,15 @@ import NoConnection from './NoConnection';
 import {colors} from '../../assets/colors';
 colors;
 function Home() {
-  const {saveGame, user} = useContext(AuthContext);
+  const {saveGame, user, updateInfo} = useContext(AuthContext);
   const [games, setGames] = useState([]);
   const [connection, setConnection] = useState(true);
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
+    setGames([]);
     loadGames();
-  }, []);
+  }, [updateInfo]);
 
   async function loadGames() {
     setLoading(true);
