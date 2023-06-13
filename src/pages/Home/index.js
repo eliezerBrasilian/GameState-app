@@ -1,4 +1,4 @@
-import {View, FlatList, ActivityIndicator} from 'react-native';
+import {View, FlatList, ActivityIndicator, Modal} from 'react-native';
 import {useContext, useEffect, useState} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
 import api from '../../services/api';
@@ -8,6 +8,8 @@ import NoConnection from './NoConnection';
 import {colors} from '../../assets/colors';
 import NoGames from './NoGames';
 import BtnAdd from './BtnAdd';
+import PopUpAddGame from './PopUpAddGame';
+import {SelectCountry} from 'react-native-element-dropdown';
 colors;
 function Home() {
   const {saveGame, user, updateInfo, isGamesEmpty, setGameEmpty} =
@@ -15,12 +17,16 @@ function Home() {
   const [games, setGames] = useState([]);
   const [connection, setConnection] = useState(true);
   const [isLoading, setLoading] = useState(false);
+  const [isPopUpVisible, setPopUpVisible] = useState(false);
 
   useEffect(() => {
     setGames([]);
     loadGames();
   }, [updateInfo]);
 
+  function openModal() {
+    setPopUpVisible(!isPopUpVisible);
+  }
   async function loadGames() {
     setLoading(true);
     await api
@@ -107,7 +113,13 @@ function Home() {
               keyExtractor={(item, index) => index.toString()}
               renderItem={item => <Card data={item} />}
             />
-            <BtnAdd />
+            <BtnAdd openModal={openModal} />
+            {isPopUpVisible && (
+              <PopUpAddGame
+                isPopUpVisible={isPopUpVisible}
+                setPopUpVisible={setPopUpVisible}
+              />
+            )}
           </View>
         )}
       </View>
