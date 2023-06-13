@@ -9,10 +9,9 @@ import {colors} from '../../assets/colors';
 import NoGames from './NoGames';
 import BtnAdd from './BtnAdd';
 import PopUpAddGame from './PopUpAddGame';
-import {SelectCountry} from 'react-native-element-dropdown';
 colors;
 function Home() {
-  const {saveGame, user, updateInfo, isGamesEmpty, setGameEmpty} =
+  const {user, updateInfo, isGamesEmpty, setGameEmpty} =
     useContext(AuthContext);
   const [games, setGames] = useState([]);
   const [connection, setConnection] = useState(true);
@@ -118,6 +117,7 @@ function Home() {
               <PopUpAddGame
                 isPopUpVisible={isPopUpVisible}
                 setPopUpVisible={setPopUpVisible}
+                loadGames={loadGames}
               />
             )}
           </View>
@@ -128,14 +128,3 @@ function Home() {
 }
 
 export default Home;
-
-/*  async function handleSavingGame() {
-    let game = {
-      id_usuario: user.id,
-      id_console: 6,
-      nome: 'Falcon',
-      capa: 'https://i.pinimg.com/originals/33/0e/fd/330efde622f2c9e64dc52b48b77c1da9.jpg',
-    };
-    await saveGame(game);
-  }
-  */

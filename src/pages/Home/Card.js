@@ -11,9 +11,7 @@ function Card(props) {
   const [gameName] = useState(nome);
   const [gameCover] = useState(capa);
   const [gameId] = useState(id);
-  const [gameFinishedDate] = useState(
-    format(new Date(finishedDate), 'dd/MM/yyyy HH:mm:ss'),
-  );
+  const [gameFinishedDate] = useState(finishedDate);
 
   async function deleteGame() {
     console.log('deletar: ' + gameId);

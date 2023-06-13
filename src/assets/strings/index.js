@@ -13,7 +13,7 @@ const strings = {
   game_name_placeholder: 'Digite o nome do jogo',
   game_desc_placeholder: 'Descreva como foi zerar o game',
   plataform_placeholder: 'Steam',
-  finished_date_placeholder: 'Quando você zerou o game?',
+  finished_date_placeholder: 'Digite quando você zerou o game',
   selecione: 'Selecione',
 };
 

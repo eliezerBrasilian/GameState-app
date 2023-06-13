@@ -7,18 +7,54 @@ import {
   View,
   TouchableOpacity,
   Text,
+  Alert,
 } from 'react-native';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import {AuthContext} from '../../contexts/AuthContext';
 import api from '../../services/api';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {strings} from '../../assets/strings';
 import {SelectList} from 'react-native-dropdown-select-list';
-function PopUpAddGame({isPopUpVisible, setPopUpVisible}) {
-  const [selected, setSelected] = useState('');
+function PopUpAddGame({isPopUpVisible, setPopUpVisible, loadGames}) {
+  const {user} = useContext(AuthContext);
   const [data, setData] = useState([]);
+  const [capa, setCapa] = useState('');
+  const [nomeJogo, setNomeJogo] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [selected, setSelected] = useState('');
+  const [finishedDate, setFinishedDate] = useState('');
+
   useEffect(() => {
     loadConsoles();
   }, []);
+
+  async function savingGame() {
+    console.log(
+      `capa: ${capa} - nomeJogo: ${nomeJogo} - descricao: ${descricao} - id_console: ${selected} - finishedDate: ${finishedDate}`,
+    );
+    if (capa !== '' && nomeJogo != '' && selected != '' && finishedDate != '') {
+      let game = {
+        id_usuario: user.id,
+        id_console: selected,
+        nome: nomeJogo,
+        descricao: descricao,
+        capa: capa,
+        finishedDate: finishedDate,
+      };
+      await api
+        .post('/game', game)
+        .then(r => {
+          loadGames();
+          console.log(r.data);
+        })
+        .catch(e => {
+          console.log('erro: ' + e);
+        });
+    } else {
+      Alert.alert('Tem algum campo faltando');
+    }
+  }
+
   async function loadConsoles() {
     await api
       .get('/consoles')
@@ -68,6 +104,9 @@ function PopUpAddGame({isPopUpVisible, setPopUpVisible}) {
                       placeholder={strings.cover_placeholder}
                       placeholderTextColor="#000"
                       autoFocus={true}
+                      onChangeText={t => {
+                        setCapa(t);
+                      }}
                     />
                   </InputView>
                   <InputView>
@@ -76,20 +115,27 @@ function PopUpAddGame({isPopUpVisible, setPopUpVisible}) {
                       style={s.inputContainer}
                       placeholder={strings.game_name_placeholder}
                       placeholderTextColor="#000"
+                      onChangeText={t => {
+                        setNomeJogo(t);
+                      }}
                     />
                   </InputView>
-                  <InputView>
+                  {/* <InputView>
                     <Label>{strings.game_desc_label}</Label>
                     <TextInput
                       style={s.inputContainer}
                       placeholder={strings.game_desc_placeholder}
                       placeholderTextColor="#000"
+                      onChangeText={t => {
+                        setDescricao(t);
+                      }}
                     />
-                  </InputView>
+                  </InputView> */}
                   <InputView>
                     <Label>{strings.plataform_label}</Label>
                     <SelectList
-                      onSelect={() => alert(selected)}
+                      //   onSelect={() => alert(selected)}
+                      placeholder="Selecione"
                       setSelected={setSelected}
                       fontFamily="lato"
                       data={data}
@@ -105,11 +151,14 @@ function PopUpAddGame({isPopUpVisible, setPopUpVisible}) {
                     <Label>{strings.finished_date_label}</Label>
                     <TextInput
                       style={s.inputContainer}
-                      placeholder={strings.cover_placeholder}
+                      placeholder={strings.finished_date_placeholder}
                       placeholderTextColor="#000"
+                      onChangeText={t => {
+                        setFinishedDate(t);
+                      }}
                     />
                   </InputView>
-                  <TouchableOpacity style={s.btn}>
+                  <TouchableOpacity style={s.btn} onPress={savingGame}>
                     <Text style={s.btnText}>Salvar game</Text>
                   </TouchableOpacity>
                 </Body>
@@ -128,6 +177,7 @@ const s = StyleSheet.create({
     backgroundColor: '#fff',
     width: '100%',
     borderRadius: 10,
+    color: '#000',
   },
   btn: {
     elevation: 1,
