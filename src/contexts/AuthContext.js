@@ -6,6 +6,7 @@ export const AuthContext = createContext({});
 export default function AuthProvider({children}) {
   const [user, setUser] = useState(null);
   const [updateInfo, setUpdateInfo] = useState(false);
+  const [isGamesEmpty, setGameEmpty] = useState(false);
   useEffect(() => {
     loadData();
   }, []);
@@ -73,6 +74,8 @@ export default function AuthProvider({children}) {
         saveGame,
         updateInfo,
         setUpdateInfo,
+        isGamesEmpty,
+        setGameEmpty,
       }}>
       {children}
     </AuthContext.Provider>

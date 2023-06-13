@@ -6,9 +6,12 @@ import Header from './Header';
 import Card from './Card';
 import NoConnection from './NoConnection';
 import {colors} from '../../assets/colors';
+import NoGames from './NoGames';
+import BtnAdd from './BtnAdd';
 colors;
 function Home() {
-  const {saveGame, user, updateInfo} = useContext(AuthContext);
+  const {saveGame, user, updateInfo, isGamesEmpty, setGameEmpty} =
+    useContext(AuthContext);
   const [games, setGames] = useState([]);
   const [connection, setConnection] = useState(true);
   const [isLoading, setLoading] = useState(false);
@@ -28,9 +31,15 @@ function Home() {
       })
       .then(response => {
         console.log(response.data.games);
-        console.log(games.length);
-        setLoading(false);
         setGames(response.data.games);
+        console.log(response.data.games.length === 0);
+        if (response.data.games.length === 0) {
+          setGameEmpty(true);
+        } else {
+          setGameEmpty(false);
+        }
+        console.log(isGamesEmpty);
+        setLoading(false);
       })
       .catch(e => {
         setLoading(false);
@@ -57,6 +66,22 @@ function Home() {
         </View>
       </View>
     );
+  } else if (isGamesEmpty) {
+    return (
+      <View style={{backgroundColor: '#000', flex: 1}}>
+        <Header />
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: 1,
+          }}>
+          <NoGames />
+
+          <BtnAdd />
+        </View>
+      </View>
+    );
   } else {
     return (
       <View
@@ -65,6 +90,7 @@ function Home() {
           flex: 1,
         }}>
         <Header />
+
         {isLoading ? (
           <View
             style={{
@@ -75,11 +101,14 @@ function Home() {
             <ActivityIndicator size={40} color={colors.game_title} />
           </View>
         ) : (
-          <FlatList
-            data={games}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={item => <Card data={item} />}
-          />
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <FlatList
+              data={games}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={item => <Card data={item} />}
+            />
+            <BtnAdd />
+          </View>
         )}
       </View>
     );
