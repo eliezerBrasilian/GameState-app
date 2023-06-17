@@ -15,6 +15,11 @@ const strings = {
   plataform_placeholder: 'Steam',
   finished_date_placeholder: 'Digite quando você zerou o game',
   selecione: 'Selecione',
+  all_your_games_here: 'Todos os seus games aqui',
+  show_your_achieves: 'Mostre suas Conquistas ',
+  enter_now: 'Entre agora',
+  its_free_and_easy: 'É grátis e fácil',
+  start: 'Iniciar cadastro',
 };
 
 export {strings};
