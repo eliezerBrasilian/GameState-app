@@ -7,11 +7,11 @@ import {format} from 'date-fns';
 import api from '../../services/api';
 function Card(props) {
   const {updateInfo, setUpdateInfo} = useContext(AuthContext);
-  let {nome, capa, id, finishedDate} = props.data.item;
+  let {nome, capa, id, finisheddate} = props.data.item;
   const [gameName] = useState(nome);
   const [gameCover] = useState(capa);
   const [gameId] = useState(id);
-  const [gameFinishedDate] = useState(finishedDate);
+  const [gameFinishedDate] = useState(finisheddate);
 
   async function deleteGame() {
     console.log('deletar: ' + gameId);
@@ -141,7 +141,7 @@ const BelowView = styled.View`
   background-color: #fff;
   flex: 1;
   width: 100%;
-  border-radius: 20px;
+  border-radius: 10px;
   margin-top: 15px;
   padding: 10px;
 `;

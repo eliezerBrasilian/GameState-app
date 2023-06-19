@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://192.168.100.31:80',
+  baseURL: 'https://game-state-backend.vercel.app',
 });
 
 export default api;

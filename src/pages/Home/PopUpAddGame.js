@@ -15,16 +15,20 @@ import api from '../../services/api';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {strings} from '../../assets/strings';
 import {SelectList} from 'react-native-dropdown-select-list';
-function PopUpAddGame({isPopUpVisible, setPopUpVisible, loadGames}) {
-  const {user} = useContext(AuthContext);
+function PopUpAddGame() {
+  const {user, isPopUpVisible, setPopUpVisible, updateInfo, setUpdateInfo} =
+    useContext(AuthContext);
   const [data, setData] = useState([]);
-  const [capa, setCapa] = useState('');
-  const [nomeJogo, setNomeJogo] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [selected, setSelected] = useState('');
-  const [finishedDate, setFinishedDate] = useState('');
+  const [capa, setCapa] = useState(
+    'https://i.pinimg.com/originals/05/42/73/054273927cddcfaf5a4341893ba36d1a.jpg',
+  );
+  const [nomeJogo, setNomeJogo] = useState('Dora teste');
+  const [descricao, setDescricao] = useState('nada');
+  const [selected, setSelected] = useState('1');
+  const [finishedDate, setFinishedDate] = useState('ontem');
 
   useEffect(() => {
+    console.log('MODAL component');
     loadConsoles();
   }, []);
 
@@ -35,17 +39,18 @@ function PopUpAddGame({isPopUpVisible, setPopUpVisible, loadGames}) {
     if (capa !== '' && nomeJogo != '' && selected != '' && finishedDate != '') {
       let game = {
         id_usuario: user.id,
-        id_console: selected,
+        id_console: Number(selected),
         nome: nomeJogo,
         descricao: descricao,
         capa: capa,
-        finishedDate: finishedDate,
+        finisheddate: finishedDate,
       };
       await api
         .post('/game', game)
         .then(r => {
-          loadGames();
           console.log(r.data);
+          setPopUpVisible(!isPopUpVisible);
+          setUpdateInfo(!updateInfo);
         })
         .catch(e => {
           console.log('erro: ' + e);

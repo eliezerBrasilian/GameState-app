@@ -9,23 +9,18 @@ import {colors} from '../../assets/colors';
 import NoGames from './NoGames';
 import BtnAdd from './BtnAdd';
 import PopUpAddGame from './PopUpAddGame';
-colors;
 function Home() {
-  const {user, updateInfo, isGamesEmpty, setGameEmpty} =
+  const {user, updateInfo, isGamesEmpty, setGameEmpty, isPopUpVisible} =
     useContext(AuthContext);
   const [games, setGames] = useState([]);
   const [connection, setConnection] = useState(true);
   const [isLoading, setLoading] = useState(false);
-  const [isPopUpVisible, setPopUpVisible] = useState(false);
 
   useEffect(() => {
-    setGames([]);
+    //setGames([]);
     loadGames();
   }, [updateInfo]);
 
-  function openModal() {
-    setPopUpVisible(!isPopUpVisible);
-  }
   async function loadGames() {
     setLoading(true);
     await api
@@ -82,8 +77,8 @@ function Home() {
             flex: 1,
           }}>
           <NoGames />
-
           <BtnAdd />
+          {isPopUpVisible && <PopUpAddGame loadGames={loadGames} />}
         </View>
       </View>
     );
@@ -112,14 +107,8 @@ function Home() {
               keyExtractor={(item, index) => index.toString()}
               renderItem={item => <Card data={item} />}
             />
-            <BtnAdd openModal={openModal} />
-            {isPopUpVisible && (
-              <PopUpAddGame
-                isPopUpVisible={isPopUpVisible}
-                setPopUpVisible={setPopUpVisible}
-                loadGames={loadGames}
-              />
-            )}
+            <BtnAdd />
+            {isPopUpVisible && <PopUpAddGame />}
           </View>
         )}
       </View>

@@ -7,9 +7,11 @@ export default function AuthProvider({children}) {
   const [user, setUser] = useState(null);
   const [updateInfo, setUpdateInfo] = useState(false);
   const [isGamesEmpty, setGameEmpty] = useState(false);
+  const [isPopUpVisible, setPopUpVisible] = useState(false);
   useEffect(() => {
     loadData();
   }, []);
+
   async function saveGame(game) {
     const response = await api.post('/game', game);
     console.log(response.data);
@@ -46,6 +48,7 @@ export default function AuthProvider({children}) {
         email: 'xarles.com',
         senha: '12345',
       });
+
       console.log(response);
       const {id, nome, email, isPremium, token, username} = response.data;
 
@@ -76,6 +79,8 @@ export default function AuthProvider({children}) {
         setUpdateInfo,
         isGamesEmpty,
         setGameEmpty,
+        isPopUpVisible,
+        setPopUpVisible,
       }}>
       {children}
     </AuthContext.Provider>
