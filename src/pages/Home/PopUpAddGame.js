@@ -20,7 +20,7 @@ function PopUpAddGame() {
     useContext(AuthContext);
   const [data, setData] = useState([]);
   const [capa, setCapa] = useState(
-    'https://i.pinimg.com/originals/05/42/73/054273927cddcfaf5a4341893ba36d1a.jpg',
+    'https://ewingsvoice.com/wp-content/uploads/2019/11/480274-celeste-nintendo-switch-front-cover.jpg',
   );
   const [nomeJogo, setNomeJogo] = useState('Dora teste');
   const [descricao, setDescricao] = useState('nada');
