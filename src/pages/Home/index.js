@@ -5,13 +5,12 @@ import api from '../../services/api';
 import Header from './Header';
 import Card from './Card';
 import NoConnection from './NoConnection';
-import {colors} from '../../assets/colors';
 import NoGames from './NoGames';
 import BtnAdd from './BtnAdd';
 import PopUpAddGame from './PopUpAddGame';
+
 function Home() {
-  const {user, updateInfo, isGamesEmpty, setGameEmpty, isPopUpVisible} =
-    useContext(AuthContext);
+  const {user, updateInfo, isPopUpVisible} = useContext(AuthContext);
   const [games, setGames] = useState([]);
   const [connection, setConnection] = useState(true);
   const [page, setPage] = useState(1);
@@ -20,16 +19,16 @@ function Home() {
   const [isEndReached, setEndReached] = useState(false); // Novo estado
 
   useEffect(() => {
+    setGames([]);
+    setEndReached(false); // Reinicia o estado isEndReached ao atualizar updateInfo
     reLoadGames();
   }, [updateInfo]);
 
   useEffect(() => {
-    setEndReached(false); // Reinicia o estado isEndReached ao atualizar updateInfo
     loadGames();
   }, []);
 
   async function reLoadGames() {
-    setGames([]);
     console.log('esteve aqui reload');
     setFetching(true);
 
@@ -41,6 +40,11 @@ function Home() {
       });
 
       setGames(response.data);
+      if (response.data.length === 0) {
+        setHasMore(false);
+      } else {
+        setHasMore(true);
+      }
     } catch (error) {
       console.error('erro: ' + error);
     } finally {
@@ -62,7 +66,7 @@ function Home() {
       if (response.data.length === 0) {
         setHasMore(false);
       } else {
-        setGames(prevGames => [...prevGames, ...response.data]);
+        setGames([...games, ...response.data]);
         setPage(prevPage => prevPage + 1);
       }
     } catch (error) {
@@ -72,82 +76,31 @@ function Home() {
     }
   }
 
-  const handleEndReached = () => {
-    if (!isEndReached) {
-      setEndReached(true);
-      loadGames();
-    }
-  };
-  if (!connection) {
-    return (
-      <View
-        style={{
-          backgroundColor: '#000',
-          flex: 1,
-        }}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: '#000',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <NoConnection loadGames={loadGames} />
-        </View>
-      </View>
-    );
-  } else if (games.length === 0) {
-    return (
-      <View style={{backgroundColor: '#000', flex: 1}}>
-        <Header />
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            flex: 1,
-          }}>
-          <NoGames />
-          <BtnAdd />
-          {isPopUpVisible && <PopUpAddGame loadGames={loadGames} />}
-        </View>
-      </View>
-    );
-  } else
-    return (
-      <View
-        style={{
-          backgroundColor: '#000',
-          flex: 1,
-        }}>
-        <Header />
+  return (
+    <View
+      style={{
+        backgroundColor: '#000',
+        flex: 1,
+      }}>
+      <Header />
 
+      {hasMore ? (
         <FlatList
           data={games}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item}) => <Card data={item} />}
-          onEndReached={handleEndReached}
+          onEndReached={RenderFooter}
           onEndReachedThreshold={0.1}
           ListFooterComponent={<RenderFooter load={isFetching} />}
         />
-        <BtnAdd />
-        {isPopUpVisible && <PopUpAddGame />}
-      </View>
-    );
-  // }
+      ) : (
+        <NoGames />
+      )}
 
-  function Items({data}) {
-    console.log(data.capa);
-    return (
-      <View
-        style={{
-          backgroundColor: '#fff',
-          marginTop: 20,
-          height: 90,
-        }}>
-        <Text style={{color: '#000'}}>{data.capa}</Text>
-      </View>
-    );
-  }
+      <BtnAdd />
+      {isPopUpVisible && <PopUpAddGame />}
+    </View>
+  );
 }
 function RenderFooter({load}) {
   if (!load) return null;

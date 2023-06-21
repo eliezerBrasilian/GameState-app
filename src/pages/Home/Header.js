@@ -2,12 +2,17 @@ import styled from 'styled-components';
 import {View, TouchableOpacity} from 'react-native';
 import {useContext} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
+import {useNavigation} from '@react-navigation/native';
 function Header() {
+  const nav = useNavigation();
   const {user} = useContext(AuthContext);
+  function goToProfile() {
+    nav.navigate('Profile');
+  }
   return (
     <HeaderView>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={goToProfile}>
           <ProfileIcon source={require('../../assets/img/profile_.png')} />
         </TouchableOpacity>
         <View style={{marginLeft: 10}}>

@@ -20,6 +20,9 @@ const strings = {
   enter_now: 'Entre agora',
   its_free_and_easy: 'É grátis e fácil',
   start: 'Iniciar cadastro',
+  change_photo: 'Trocar foto',
+  username_label: 'Username',
+  destroy_ads: 'Eliminar anúncios',
 };
 
 export {strings};

@@ -19,13 +19,11 @@ function PopUpAddGame() {
   const {user, isPopUpVisible, setPopUpVisible, updateInfo, setUpdateInfo} =
     useContext(AuthContext);
   const [data, setData] = useState([]);
-  const [capa, setCapa] = useState(
-    'https://ewingsvoice.com/wp-content/uploads/2019/11/480274-celeste-nintendo-switch-front-cover.jpg',
-  );
-  const [nomeJogo, setNomeJogo] = useState('Dora teste');
-  const [descricao, setDescricao] = useState('nada');
+  const [capa, setCapa] = useState('');
+  const [nomeJogo, setNomeJogo] = useState('');
+  const [descricao, setDescricao] = useState('');
   const [selected, setSelected] = useState('1');
-  const [finishedDate, setFinishedDate] = useState('ontem');
+  const [finishedDate, setFinishedDate] = useState('');
 
   useEffect(() => {
     console.log('MODAL component');
@@ -109,6 +107,7 @@ function PopUpAddGame() {
                       placeholder={strings.cover_placeholder}
                       placeholderTextColor="#000"
                       autoFocus={true}
+                      value={capa}
                       onChangeText={t => {
                         setCapa(t);
                       }}
@@ -120,6 +119,7 @@ function PopUpAddGame() {
                       style={s.inputContainer}
                       placeholder={strings.game_name_placeholder}
                       placeholderTextColor="#000"
+                      value={nomeJogo}
                       onChangeText={t => {
                         setNomeJogo(t);
                       }}
@@ -158,6 +158,7 @@ function PopUpAddGame() {
                       style={s.inputContainer}
                       placeholder={strings.finished_date_placeholder}
                       placeholderTextColor="#000"
+                      value={finishedDate}
                       onChangeText={t => {
                         setFinishedDate(t);
                       }}
@@ -185,7 +186,6 @@ const s = StyleSheet.create({
     color: '#000',
   },
   btn: {
-    elevation: 1,
     backgroundColor: 'black',
     height: 50,
     padding: 10,
