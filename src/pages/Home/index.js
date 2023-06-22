@@ -17,6 +17,7 @@ function Home() {
   const [isFetching, setFetching] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isEndReached, setEndReached] = useState(false); // Novo estado
+  const [isGamesEmpty, setGamesEmpty] = useState(false); // Novo estado
 
   useEffect(() => {
     setGames([]);
@@ -42,6 +43,7 @@ function Home() {
       setGames(response.data);
       if (response.data.length === 0) {
         setHasMore(false);
+        setGamesEmpty(true);
       } else {
         setHasMore(true);
       }
@@ -65,9 +67,11 @@ function Home() {
 
       if (response.data.length === 0) {
         setHasMore(false);
+        setGamesEmpty(true);
       } else {
         setGames([...games, ...response.data]);
         setPage(prevPage => prevPage + 1);
+        console.log(response.data);
       }
     } catch (error) {
       console.error('erro: ' + error);

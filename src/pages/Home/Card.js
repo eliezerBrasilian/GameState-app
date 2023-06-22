@@ -2,14 +2,16 @@ import {View, TouchableOpacity, Image, StyleSheet, Text} from 'react-native';
 import {useState, useContext} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
 import {colors} from '../../assets/colors';
+import {strings} from '../../assets/strings';
 import api from '../../services/api';
 function Card({data}) {
   const {updateInfo, setUpdateInfo} = useContext(AuthContext);
-  let {nome, capa, id, finisheddate} = data;
+  let {nome, capa, id, finisheddate, nome_console} = data;
   const [gameName] = useState(nome);
   const [gameCover] = useState(capa);
   const [gameId] = useState(id);
   const [gameFinishedDate] = useState(finisheddate);
+  const [consoleName] = useState(nome_console);
 
   async function deleteGame() {
     console.log('deletar: ' + gameId);
@@ -42,7 +44,7 @@ function Card({data}) {
             source={require('../../assets/img/manete_.png')}
             resizeMode="contain"
           />
-          <Text style={s.title}>{gameName}</Text>
+          <Text style={s.title}>{consoleName}</Text>
         </View>
         {finisheddate !== '' && (
           <View style={s.footer_top}>
@@ -51,18 +53,20 @@ function Card({data}) {
               source={require('../../assets/img/finished_.png')}
               resizeMode="contain"
             />
-            <Text style={s.title}>Finalizado em: {gameFinishedDate}</Text>
+            <Text style={s.title}>
+              {strings.finished_at} {gameFinishedDate}
+            </Text>
           </View>
         )}
       </View>
       <View style={s.btns}>
         <TouchableOpacity style={[s.btn, {backgroundColor: '#2B2A4C'}]}>
-          <Text>Editar</Text>
+          <Text>{strings.edit}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={deleteGame}
           style={[s.btn, {backgroundColor: '#B31312'}]}>
-          <Text>Deletar</Text>
+          <Text>{strings.delete}</Text>
         </TouchableOpacity>
       </View>
     </View>

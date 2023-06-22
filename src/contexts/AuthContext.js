@@ -49,9 +49,9 @@ export default function AuthProvider({children}) {
         senha: '12345',
       });
 
-      console.log(response);
+      console.log(response.data);
       const {id, nome, email, isPremium, token, username} = response.data;
-
+      console.log(username);
       const data = {
         id,
         nome,
@@ -60,10 +60,12 @@ export default function AuthProvider({children}) {
         token,
         username,
       };
-      api.defaults.headers['Authorization'] = `Bearer ${token}`;
-      setUser(data);
-      await AsyncStorage.setItem('@token', token);
-      await AsyncStorage.setItem('@userData', JSON.stringify(data));
+      if (response.data != undefined) {
+        api.defaults.headers['Authorization'] = `Bearer ${token}`;
+        setUser(data);
+        await AsyncStorage.setItem('@token', token);
+        await AsyncStorage.setItem('@userData', JSON.stringify(data));
+      }
     } catch (e) {
       console.log('Erro ao logar: ' + e);
     }

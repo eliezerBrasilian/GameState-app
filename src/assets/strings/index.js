@@ -23,6 +23,9 @@ const strings = {
   change_photo: 'Trocar foto',
   username_label: 'Username',
   destroy_ads: 'Eliminar anúncios',
+  delete: 'Deletar',
+  edit: 'Editar',
+  finished_at: 'Finalizado em:',
 };
 
 export {strings};
