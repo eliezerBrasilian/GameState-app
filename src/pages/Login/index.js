@@ -1,21 +1,21 @@
-import {useState, useContext, useMemo} from 'react';
+import {useState, useContext} from 'react';
 import {
   TouchableOpacity,
   View,
   ScrollView,
   Image,
   StyleSheet,
-  TextInput,
   Text,
   Alert,
 } from 'react-native';
 import {AuthContext} from '../../contexts/AuthContext';
-import {styled} from 'styled-components';
 import Icon from 'react-native-vector-icons/AntDesign';
 import LockIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colors} from '../../assets/colors';
 import {strings} from '../../assets/strings';
 import Btn from '../../assets/components/Btn';
+import Input from '../../assets/components/Input';
+
 function Login() {
   const {login} = useContext(AuthContext);
   const [email, setEmail] = useState('');
@@ -26,7 +26,7 @@ function Login() {
       const response = await login(email, password);
       if (response == 406) {
         Alert.alert(strings.err_invalid_password);
-      } else {
+      } else if (response == 404) {
         Alert.alert(strings.err_invalid_email);
       }
     } else {
@@ -46,26 +46,21 @@ function Login() {
           source={require('../../assets/img/boy_login.png')}
           resizeMode="contain"
         />
-        <InputView color={colors.game_title}>
-          <Icon name="user" color={colors.game_title} size={25} />
-          <TextInput
-            style={s.input}
-            placeholder={strings.email}
-            placeholderTextColor="#fff"
-            value={email}
-            onChangeText={t => setEmail(t)}
-          />
-        </InputView>
-        <InputView color={colors.btn_editar}>
-          <LockIcon name="lock" color={colors.btn_editar} size={25} />
-          <TextInput
-            style={s.input}
-            placeholder={strings.password}
-            placeholderTextColor="#fff"
-            value={password}
-            onChangeText={t => setPassword(t)}
-          />
-        </InputView>
+        <Input
+          color={colors.game_title}
+          placeholder={strings.email}
+          value={email}
+          setValue={setEmail}
+          icon={<Icon name="user" color={colors.game_title} size={25} />}
+        />
+        <Input
+          color={colors.btn_editar}
+          placeholder={strings.password}
+          value={password}
+          setValue={setPassword}
+          icon={<LockIcon name="lock" color={colors.btn_editar} size={25} />}
+        />
+
         <TouchableOpacity
           style={{
             maxWidth: '60%',
@@ -89,21 +84,6 @@ const s = StyleSheet.create({
   img: {
     height: 300,
   },
-  input: {
-    flex: 1,
-    width: '100%',
-    fontSize: 17,
-  },
 });
 
-const InputView = styled.View`
-  margin-top: 10px;
-  border: 2px solid ${props => props.color};
-  border-radius: 9px;
-  padding-left: 10px;
-  flex-direction: row;
-  align-items: center;
-  margin-left: 10px;
-  margin-right: 10px;
-`;
 export default Login;

@@ -7,7 +7,6 @@ export const AuthContext = createContext({});
 export default function AuthProvider({children}) {
   const [user, setUser] = useState(null);
   const [updateInfo, setUpdateInfo] = useState(false);
-  const [isGamesEmpty, setGameEmpty] = useState(false);
   const [isPopUpVisible, setPopUpVisible] = useState(false);
   const [isLoadingAuth, setLoadingAuth] = useState(false);
   const [errDescription, setErrDescription] = useState('');
@@ -98,8 +97,6 @@ export default function AuthProvider({children}) {
         saveGame,
         updateInfo,
         setUpdateInfo,
-        isGamesEmpty,
-        setGameEmpty,
         isPopUpVisible,
         setPopUpVisible,
         isLoadingAuth,
