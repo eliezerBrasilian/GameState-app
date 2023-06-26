@@ -13,8 +13,12 @@ import {useContext, useState} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
 
 function Body() {
-  const {user} = useContext(AuthContext);
+  const {user, signOut} = useContext(AuthContext);
   const [username, setUsername] = useState(user.username);
+
+  function handleSignOut() {
+    signOut();
+  }
   return (
     <View style={s.container}>
       <Image style={s.img} source={require('../../assets/img/profile_2.png')} />
@@ -37,6 +41,21 @@ function Body() {
         <TouchableOpacity style={s.btnDestroyAds}>
           <Text style={[s.btnText, {color: '#000', fontSize: 18}]}>
             {strings.destroy_ads}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleSignOut}
+          style={[
+            s.btnDestroyAds,
+            {
+              backgroundColor: 'transparent',
+              borderColor: colors.game_title,
+              borderWidth: 2,
+              paddingVertical: 10,
+            },
+          ]}>
+          <Text style={[s.btnText, {color: '#fff', fontSize: 17}]}>
+            {strings.sair}
           </Text>
         </TouchableOpacity>
       </View>

@@ -11,7 +11,7 @@ export default function AuthRoutes() {
       screenOptions={{
         headerShown: false,
       }}>
-      {/* <Stack.Screen name="OnBoarding" component={OnBoarding} /> */}
+      <Stack.Screen name="OnBoarding" component={OnBoarding} />
       <Stack.Screen name="Login" component={Login} />
     </Stack.Navigator>
   );

@@ -26,6 +26,15 @@ const strings = {
   delete: 'Deletar',
   edit: 'Editar',
   finished_at: 'Finalizado em:',
+  sair: 'Sair',
+  email: 'Email',
+  password: 'Senha',
+  enter: 'Entrar',
+  sign_up: 'Cadastrar',
+  recovery_password: 'Recuperar senha',
+  fill_all: 'Preencha todos os campos :(',
+  err_invalid_email: 'Este email é inválido :(',
+  err_invalid_password: 'A senha está incorreta :(',
 };
 
 export {strings};

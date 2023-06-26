@@ -8,6 +8,7 @@ import {
   Image,
   ImageBackground,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import PagerView, {
   PagerViewOnPageScrollEventData,
 } from 'react-native-pager-view';
@@ -38,6 +39,7 @@ const INTRO_DATA = [
 ];
 
 export default function OnBoarding() {
+  const nav = useNavigation();
   const width = Dimensions.get('window').width;
   const ref = React.useRef<PagerView>(null);
   const scrollOffsetAnimatedValue = React.useRef(new Animated.Value(0)).current;
@@ -51,6 +53,9 @@ export default function OnBoarding() {
     outputRange: [0, INTRO_DATA.length * width],
   });
 
+  function goToAuth() {
+    nav.navigate('Login');
+  }
   const onPageScroll = React.useMemo(
     () =>
       Animated.event<PagerViewOnPageScrollEventData>(
@@ -96,7 +101,7 @@ export default function OnBoarding() {
               resizeMode="contain"
               resizeMethod="resize"
             />
-            {key == '3' && <Btn />}
+            {key == '3' && <Btn method={goToAuth} />}
           </View>
         ))}
       </AnimatedPagerView>

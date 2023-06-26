@@ -1,6 +1,7 @@
 import React, {createContext, useState, useEffect} from 'react';
 import api from '../services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {strings} from '../assets/strings';
 export const AuthContext = createContext({});
 
 export default function AuthProvider({children}) {
@@ -8,9 +9,22 @@ export default function AuthProvider({children}) {
   const [updateInfo, setUpdateInfo] = useState(false);
   const [isGamesEmpty, setGameEmpty] = useState(false);
   const [isPopUpVisible, setPopUpVisible] = useState(false);
+  const [isLoadingAuth, setLoadingAuth] = useState(false);
+  const [errDescription, setErrDescription] = useState('');
   useEffect(() => {
     loadData();
   }, []);
+
+  function signOut() {
+    AsyncStorage.clear()
+      .then(() => {
+        setUser(null);
+        console.log('saiu');
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
 
   async function saveGame(game) {
     const response = await api.post('/game', game);
@@ -41,34 +55,39 @@ export default function AuthProvider({children}) {
       }
     }
   }
-  async function login(email, senha) {
-    console.log('clicou em login');
-    try {
-      const response = await api.post('/user/login', {
-        email: 'xarles.com',
-        senha: '12345',
-      });
+  async function login(email, password) {
+    setLoadingAuth(true);
+    let respStatus = 0;
+    await api
+      .post('/user/login', {
+        email: email,
+        senha: password,
+      })
+      .then(response => {
+        setLoadingAuth(false);
 
-      console.log(response.data);
-      const {id, nome, email, isPremium, token, username} = response.data;
-      console.log(username);
-      const data = {
-        id,
-        nome,
-        email,
-        isPremium,
-        token,
-        username,
-      };
-      if (response.data != undefined) {
+        const {id, nome, email, isPremium, token, username} = response.data;
+        const data = {
+          id,
+          nome,
+          email,
+          isPremium,
+          token,
+          username,
+        };
         api.defaults.headers['Authorization'] = `Bearer ${token}`;
         setUser(data);
-        await AsyncStorage.setItem('@token', token);
-        await AsyncStorage.setItem('@userData', JSON.stringify(data));
-      }
-    } catch (e) {
-      console.log('Erro ao logar: ' + e);
-    }
+        AsyncStorage.setItem('@token', token);
+        AsyncStorage.setItem('@userData', JSON.stringify(data));
+        respStatus = 200;
+      })
+      .catch(e => {
+        console.log(e.response.data);
+        const {status} = e.response;
+        setLoadingAuth(false);
+        respStatus = status;
+      });
+    return respStatus;
   }
   return (
     <AuthContext.Provider
@@ -83,6 +102,10 @@ export default function AuthProvider({children}) {
         setGameEmpty,
         isPopUpVisible,
         setPopUpVisible,
+        isLoadingAuth,
+        setLoadingAuth,
+        signOut,
+        errDescription,
       }}>
       {children}
     </AuthContext.Provider>
