@@ -9,20 +9,72 @@ import {
 import {colors} from '../../assets/colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {strings} from '../../assets/strings';
-import {useContext, useState} from 'react';
+import {useContext, useState, useEffect} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
-
+import {launchImageLibrary} from 'react-native-image-picker';
+import api from '../../services/api';
 function Body() {
   const {user, signOut} = useContext(AuthContext);
   const [username, setUsername] = useState(user.username);
+  const [profilePhoto, setProfilePhoto] = useState(user.profilePhoto);
+
+  useEffect(() => {
+    getProfilePhoto();
+  }, []);
 
   function handleSignOut() {
     signOut();
   }
+
+  async function getProfilePhoto() {
+    await api
+      .get(`user/${user.id}/profile/photo`)
+      .then(r => {
+        console.log(r.data.profilePhoto[0].profile_photo);
+        setProfilePhoto(r.data.profilePhoto[0].profile_photo);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+  const options = {
+    title: 'Selecione uma imagem',
+    storageOptions: {
+      skipBackup: true,
+      path: 'images',
+    },
+  };
+
+  async function launchLibrary() {
+    launchImageLibrary(options, async response => {
+      if (response.didCancel) {
+        console.log('Seleção de imagem cancelada');
+      } else if (response.error) {
+        console.log('Erro: ', response.error);
+      } else {
+        // Caminho do arquivo selecionado
+        const ra = response.assets;
+        const imagePath = ra[0].uri;
+
+        //const cleanedPath = imagePath.replace('file:///', '/');
+
+        await api
+          .post('/user/profile/photo', {imagePath: imagePath, id: user.id})
+          .then(r => {
+            console.log(r.data);
+            getProfilePhoto();
+          })
+          .catch(e => {
+            console.log(e.response);
+          });
+      }
+    });
+  }
+
   return (
     <View style={s.container}>
-      <Image style={s.img} source={require('../../assets/img/profile_2.png')} />
-      <TouchableOpacity style={s.btnChangePhoto}>
+      <Image style={s.img} source={{uri: profilePhoto}} />
+      <TouchableOpacity onPress={launchLibrary} style={s.btnChangePhoto}>
         <Text style={[s.btnText, {color: colors.btn_editar, fontSize: 17}]}>
           {strings.change_photo}
         </Text>
@@ -71,6 +123,9 @@ const s = StyleSheet.create({
   img: {
     height: 200,
     width: 200,
+    borderRadius: 100,
+    borderColor: colors.btn_editar,
+    borderWidth: 1,
   },
   btnChangePhoto: {
     marginTop: 20,

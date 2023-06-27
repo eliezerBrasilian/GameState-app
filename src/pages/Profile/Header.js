@@ -2,11 +2,13 @@ import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import {colors} from '../../assets/colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
+
 function Header() {
   const nav = useNavigation();
   function goBack() {
     nav.goBack();
   }
+
   return (
     <View style={s.container}>
       <TouchableOpacity style={s.clickable} onPress={goBack}>

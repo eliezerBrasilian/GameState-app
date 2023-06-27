@@ -65,7 +65,8 @@ export default function AuthProvider({children}) {
       .then(response => {
         setLoadingAuth(false);
 
-        const {id, nome, email, isPremium, token, username} = response.data;
+        const {id, nome, email, isPremium, token, username, profilePhoto} =
+          response.data;
         const data = {
           id,
           nome,
@@ -73,6 +74,7 @@ export default function AuthProvider({children}) {
           isPremium,
           token,
           username,
+          profilePhoto,
         };
         api.defaults.headers['Authorization'] = `Bearer ${token}`;
         setUser(data);
