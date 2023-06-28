@@ -8,6 +8,7 @@ import NoConnection from './NoConnection';
 import NoGames from './NoGames';
 import BtnAdd from './BtnAdd';
 import PopUpAddGame from './PopUpAddGame';
+import {PacmanIndicator} from 'react-native-indicators';
 
 function Home() {
   const {user, updateInfo, isPopUpVisible} = useContext(AuthContext);
@@ -111,7 +112,7 @@ function RenderFooter({load}) {
 
   return (
     <View style={{paddingVertical: 20}}>
-      <ActivityIndicator size="large" />
+      <PacmanIndicator color="#fff" />
     </View>
   );
 }

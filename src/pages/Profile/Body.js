@@ -13,11 +13,12 @@ import {useContext, useState, useEffect} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
 import {launchImageLibrary} from 'react-native-image-picker';
 import api from '../../services/api';
+import {SkypeIndicator} from 'react-native-indicators';
 function Body() {
   const {user, signOut} = useContext(AuthContext);
   const [username, setUsername] = useState(user.username);
   const [profilePhoto, setProfilePhoto] = useState(user.profilePhoto);
-
+  const [isLoadingPhoto, setLoadingPhoto] = useState(true);
   useEffect(() => {
     getProfilePhoto();
   }, []);
@@ -32,9 +33,11 @@ function Body() {
       .then(r => {
         console.log(r.data.profilePhoto[0].profile_photo);
         setProfilePhoto(r.data.profilePhoto[0].profile_photo);
+        setLoadingPhoto(false);
       })
       .catch(e => {
         console.log(e);
+        setLoadingPhoto(false);
       });
   }
   const options = {
@@ -73,7 +76,12 @@ function Body() {
 
   return (
     <View style={s.container}>
-      <Image style={s.img} source={{uri: profilePhoto}} />
+      {isLoadingPhoto ? (
+        <SkypeIndicator style={s.img} color="#fff" />
+      ) : (
+        <Image style={s.img} source={{uri: profilePhoto}} />
+      )}
+
       <TouchableOpacity onPress={launchLibrary} style={s.btnChangePhoto}>
         <Text style={[s.btnText, {color: colors.btn_editar, fontSize: 17}]}>
           {strings.change_photo}

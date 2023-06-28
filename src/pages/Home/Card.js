@@ -1,9 +1,17 @@
-import {View, TouchableOpacity, Image, StyleSheet, Text} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Text,
+  ImageBackground,
+} from 'react-native';
 import {useState, useContext} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
 import {colors} from '../../assets/colors';
 import {strings} from '../../assets/strings';
 import api from '../../services/api';
+import ShareIcon from 'react-native-vector-icons/FontAwesome';
 function Card({data}) {
   const {updateInfo, setUpdateInfo} = useContext(AuthContext);
   let {nome, capa, id, finisheddate, nome_console} = data;
@@ -30,11 +38,20 @@ function Card({data}) {
   return (
     <View style={s.container}>
       <View style={s.cover}>
-        <Image
+        <ImageBackground
           source={{uri: gameCover}}
-          style={{width: '100%', height: '100%', borderRadius: 12}}
-          resizeMode="contain"
-        />
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: 12,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          resizeMode="cover">
+          <TouchableOpacity style={{borderWidth: 1}}>
+            <ShareIcon name="share-alt" size={50} color="#fff" />
+          </TouchableOpacity>
+        </ImageBackground>
       </View>
       <View style={s.footer}>
         <Text style={s.title}>{gameName}</Text>
@@ -44,7 +61,7 @@ function Card({data}) {
             source={require('../../assets/img/manete_.png')}
             resizeMode="contain"
           />
-          <Text style={s.title}>{consoleName}</Text>
+          <Text style={[s.title, {fontSize: 17}]}>{consoleName}</Text>
         </View>
         {finisheddate !== '' && (
           <View style={s.footer_top}>
@@ -53,7 +70,7 @@ function Card({data}) {
               source={require('../../assets/img/finished_.png')}
               resizeMode="contain"
             />
-            <Text style={s.title}>
+            <Text style={[s.title, {fontSize: 16, fontWeight: '500'}]}>
               {strings.finished_at} {gameFinishedDate}
             </Text>
           </View>
@@ -85,18 +102,19 @@ const s = StyleSheet.create({
     borderRadius: 10,
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     color: '#000',
-    fontWeight: '700',
+    fontWeight: '800',
     fontStyle: 'italic',
   },
   footer: {
     alignItems: 'center',
-    height: 120,
+    minHeight: 120,
     backgroundColor: '#DDE6ED',
     borderRadius: 9,
     marginHorizontal: 10,
     rowGap: 2,
+    padding: 10,
   },
   footer_top: {
     flexDirection: 'row',
@@ -104,8 +122,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   icone: {
-    height: 30,
-    width: 30,
+    height: 26,
+    width: 26,
   },
   btns: {
     flexDirection: 'row',

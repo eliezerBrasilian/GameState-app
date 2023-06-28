@@ -8,13 +8,16 @@ import {
   TouchableOpacity,
   Text,
   Alert,
+  Image,
 } from 'react-native';
 import {useState, useEffect, useContext} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
 import api from '../../services/api';
 import Icon from 'react-native-vector-icons/AntDesign';
+import PhotoIcon from 'react-native-vector-icons/MaterialIcons';
 import {strings} from '../../assets/strings';
 import {SelectList} from 'react-native-dropdown-select-list';
+import {launchImageLibrary} from 'react-native-image-picker';
 function PopUpAddGame() {
   const {user, isPopUpVisible, setPopUpVisible, updateInfo, setUpdateInfo} =
     useContext(AuthContext);
@@ -29,6 +32,40 @@ function PopUpAddGame() {
     console.log('MODAL component');
     loadConsoles();
   }, []);
+  const options = {
+    title: 'Selecione uma imagem',
+    storageOptions: {
+      skipBackup: true,
+      path: 'images',
+    },
+  };
+
+  async function launchLibrary() {
+    launchImageLibrary(options, async response => {
+      if (response.didCancel) {
+        console.log('Seleção de imagem cancelada');
+      } else if (response.error) {
+        console.log('Erro: ', response.error);
+      } else {
+        // Caminho do arquivo selecionado
+        const ra = response.assets;
+        const imagePath = ra[0].uri;
+
+        setCapa(imagePath);
+        //const cleanedPath = imagePath.replace('file:///', '/');
+
+        // await api
+        //   .post('/user/profile/photo', {imagePath: imagePath, id: user.id})
+        //   .then(r => {
+        //     console.log(r.data);
+        //     getProfilePhoto();
+        //   })
+        //   .catch(e => {
+        //     console.log(e.response);
+        //   });
+      }
+    });
+  }
 
   async function savingGame() {
     console.log(
@@ -100,19 +137,30 @@ function PopUpAddGame() {
                   <Title>{strings.lets_save_game}</Title>
                 </Header>
                 <Body>
-                  <InputView>
+                  <TouchableOpacity
+                    onPress={launchLibrary}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      columnGap: 15,
+                    }}>
                     <Label>{strings.cover_label}</Label>
-                    <TextInput
-                      style={s.inputContainer}
-                      placeholder={strings.cover_placeholder}
-                      placeholderTextColor="#000"
-                      autoFocus={true}
-                      value={capa}
-                      onChangeText={t => {
-                        setCapa(t);
-                      }}
-                    />
-                  </InputView>
+                    {capa !== '' ? (
+                      <Image
+                        source={{uri: capa}}
+                        style={{
+                          height: 40,
+                          width: 40,
+                          borderRadius: 7,
+                          borderColor: '#fff',
+                          borderWidth: 1,
+                        }}
+                      />
+                    ) : (
+                      <PhotoIcon name="insert-photo" size={50} color="#000" />
+                    )}
+                  </TouchableOpacity>
+
                   <InputView>
                     <Label>{strings.game_name_label}</Label>
                     <TextInput
