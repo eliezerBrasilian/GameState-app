@@ -31,7 +31,7 @@ function Home() {
   }, []);
 
   async function reLoadGames() {
-    console.log('esteve aqui reload');
+    console.log('RELOADING GAMES - HOME/index.js');
     setFetching(true);
 
     try {

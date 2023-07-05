@@ -14,10 +14,12 @@ import {AuthContext} from '../../contexts/AuthContext';
 import {launchImageLibrary} from 'react-native-image-picker';
 import api from '../../services/api';
 import {SkypeIndicator} from 'react-native-indicators';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LinearGradient from 'react-native-linear-gradient';
 function Body() {
-  const {user, signOut} = useContext(AuthContext);
+  const {user, signOut, userPhoto, setUserPhoto} = useContext(AuthContext);
   const [username, setUsername] = useState(user.username);
-  const [profilePhoto, setProfilePhoto] = useState(user.profilePhoto);
+  const [profilePhoto, setProfilePhoto] = useState(userPhoto);
   const [isLoadingPhoto, setLoadingPhoto] = useState(true);
   useEffect(() => {
     getProfilePhoto();
@@ -33,6 +35,10 @@ function Body() {
       .then(r => {
         console.log(r.data.profilePhoto[0].profile_photo);
         setProfilePhoto(r.data.profilePhoto[0].profile_photo);
+        AsyncStorage.setItem(
+          '@profilePhoto',
+          r.data.profilePhoto[0].profile_photo,
+        );
         setLoadingPhoto(false);
       })
       .catch(e => {
@@ -79,7 +85,17 @@ function Body() {
       {isLoadingPhoto ? (
         <SkypeIndicator style={s.img} color="#fff" />
       ) : (
-        <Image style={s.img} source={{uri: profilePhoto}} />
+        <LinearGradient
+          colors={['#4EF2F6', '#09168C', '#F8095A']}
+          style={{
+            borderRadius: 105,
+            height: 210,
+            width: 210,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Image style={s.img} source={{uri: profilePhoto}} />
+        </LinearGradient>
       )}
 
       <TouchableOpacity onPress={launchLibrary} style={s.btnChangePhoto}>
@@ -129,11 +145,9 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   img: {
-    height: 200,
-    width: 200,
-    borderRadius: 100,
-    borderColor: colors.btn_editar,
-    borderWidth: 1,
+    height: 202,
+    width: 202,
+    borderRadius: 101,
   },
   btnChangePhoto: {
     marginTop: 20,

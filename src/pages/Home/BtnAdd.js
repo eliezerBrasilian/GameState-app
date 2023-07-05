@@ -10,7 +10,7 @@ function BtnAdd() {
   return (
     <TouchableOpacity
       onPress={openModal}
-      style={{position: 'absolute', bottom: 50, right: 20}}>
+      style={{position: 'absolute', bottom: 40, right: 20}}>
       <Image
         source={require('../../assets/img/btn_add.png')}
         style={{height: 80, width: 80}}

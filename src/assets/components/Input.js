@@ -19,6 +19,7 @@ const s = StyleSheet.create({
     flex: 1,
     width: '100%',
     fontSize: 17,
+    color: '#fff',
   },
 });
 const InputView = styled.View`

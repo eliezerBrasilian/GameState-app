@@ -1,11 +1,11 @@
 import React, {createContext, useState, useEffect} from 'react';
 import api from '../services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {strings} from '../assets/strings';
 export const AuthContext = createContext({});
 
 export default function AuthProvider({children}) {
   const [user, setUser] = useState(null);
+  const [userPhoto, setUserPhoto] = useState('');
   const [updateInfo, setUpdateInfo] = useState(false);
   const [isPopUpVisible, setPopUpVisible] = useState(false);
   const [isLoadingAuth, setLoadingAuth] = useState(false);
@@ -33,6 +33,10 @@ export default function AuthProvider({children}) {
   async function loadData() {
     const token = await AsyncStorage.getItem('@token');
     const ud = await AsyncStorage.getItem('@userData');
+    const pPhoto = await AsyncStorage.getItem('@profilePhoto');
+    if (pPhoto) {
+      setUserPhoto(pPhoto);
+    }
     if (ud) {
       console.log('usuario ja existe');
       setUser(JSON.parse(ud));
@@ -78,6 +82,8 @@ export default function AuthProvider({children}) {
         };
         api.defaults.headers['Authorization'] = `Bearer ${token}`;
         setUser(data);
+        setUserPhoto(profilePhoto);
+        AsyncStorage.setItem('@profilePhoto', profilePhoto);
         AsyncStorage.setItem('@token', token);
         AsyncStorage.setItem('@userData', JSON.stringify(data));
         respStatus = 200;
@@ -105,6 +111,8 @@ export default function AuthProvider({children}) {
         setLoadingAuth,
         signOut,
         errDescription,
+        userPhoto,
+        setUserPhoto,
       }}>
       {children}
     </AuthContext.Provider>

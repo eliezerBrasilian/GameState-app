@@ -34,6 +34,7 @@ function PopUpAddGame() {
   }, []);
   const options = {
     title: 'Selecione uma imagem',
+
     storageOptions: {
       skipBackup: true,
       path: 'images',
@@ -67,10 +68,12 @@ function PopUpAddGame() {
     });
   }
 
+  function splitImage() {
+    var string = capa;
+    var parts = string.split('/cache/');
+    return parts[1].split('/').pop();
+  }
   async function savingGame() {
-    console.log(
-      `capa: ${capa} - nomeJogo: ${nomeJogo} - descricao: ${descricao} - id_console: ${selected} - finishedDate: ${finishedDate}`,
-    );
     if (capa !== '' && nomeJogo != '' && selected != '' && finishedDate != '') {
       let game = {
         id_usuario: user.id,

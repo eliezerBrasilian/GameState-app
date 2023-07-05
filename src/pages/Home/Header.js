@@ -2,34 +2,34 @@ import styled from 'styled-components';
 import {View, TouchableOpacity} from 'react-native';
 import {useContext, useState, useEffect} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {SkypeIndicator} from 'react-native-indicators';
-import api from '../../services/api';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 function Header() {
   const [isLoadingPhoto, setLoadingPhoto] = useState(true);
-  const [profilePhoto, setProfilePhoto] = useState(true);
+  const [profilePhoto, setProfilePhoto] = useState('');
   const nav = useNavigation();
   const {user} = useContext(AuthContext);
+  const isFocused = useIsFocused();
   function goToProfile() {
     nav.navigate('Profile');
   }
 
   useEffect(() => {
-    getProfilePhoto();
-  }, []);
+    if (isFocused) {
+      getProfilePhoto();
+    }
+  }, [isFocused]);
   async function getProfilePhoto() {
-    await api
-      .get(`user/${user.id}/profile/photo`)
-      .then(r => {
-        console.log(r.data.profilePhoto[0].profile_photo);
-        setProfilePhoto(r.data.profilePhoto[0].profile_photo);
-        setLoadingPhoto(false);
-      })
-      .catch(e => {
-        console.log(e);
-        setLoadingPhoto(false);
-      });
+    try {
+      const photo = await AsyncStorage.getItem('@profilePhoto');
+      setProfilePhoto(photo);
+      setLoadingPhoto(false);
+      // setUpdateInfo(true);
+    } catch (e) {
+      console.log('HOME - HEADER - ERROR ON BRING IMAGE');
+    }
   }
   return (
     <HeaderView>

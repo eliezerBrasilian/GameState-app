@@ -6,20 +6,41 @@ import {
   Text,
   ImageBackground,
 } from 'react-native';
-import {useState, useContext} from 'react';
+import {useState, useContext, useEffect} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
+import {AppContext} from '../../contexts/AppContext';
 import {colors} from '../../assets/colors';
 import {strings} from '../../assets/strings';
 import api from '../../services/api';
 import ShareIcon from 'react-native-vector-icons/FontAwesome';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 function Card({data}) {
+  const nav = useNavigation();
+  const isFocused = useIsFocused();
   const {updateInfo, setUpdateInfo} = useContext(AuthContext);
   let {nome, capa, id, finisheddate, nome_console} = data;
   const [gameName] = useState(nome);
-  const [gameCover] = useState(capa);
+  const [gameCover, setGameCover] = useState(capa);
   const [gameId] = useState(id);
   const [gameFinishedDate] = useState(finisheddate);
   const [consoleName] = useState(nome_console);
+  useEffect(() => {
+    if (isFocused) {
+      // var string = capa;
+      // var parts = string.split('/cache/');
+      // var conteudo = parts[1];
+      // console.log(conteudo); // rn_image_picker_lib_temp_2324df2f-023d-4386-827a-cba48eca8e7f.jpg
+      // setGameCover(conteudo);
+    }
+  }, []);
+  function editGamePopUp() {
+    nav.navigate('PopUpEditGame', {
+      gameId: Number(gameId),
+      gameCover: String(gameCover),
+      gameFinishedDate: String(gameFinishedDate),
+      gameName: String(gameName),
+    });
+  }
 
   async function deleteGame() {
     console.log('deletar: ' + gameId);
@@ -77,13 +98,15 @@ function Card({data}) {
         )}
       </View>
       <View style={s.btns}>
-        <TouchableOpacity style={[s.btn, {backgroundColor: '#2B2A4C'}]}>
-          <Text>{strings.edit}</Text>
+        <TouchableOpacity
+          onPress={editGamePopUp}
+          style={[s.btn, {backgroundColor: '#2B2A4C'}]}>
+          <Text style={s.btnText}>{strings.edit}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={deleteGame}
           style={[s.btn, {backgroundColor: '#B31312'}]}>
-          <Text>{strings.delete}</Text>
+          <Text style={s.btnText}>{strings.delete}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -136,10 +159,12 @@ const s = StyleSheet.create({
     paddingHorizontal: 15,
     width: '45%',
     borderRadius: 9,
-    height: 40,
+    minHeight: 45,
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 18,
+  },
+  btnText: {
+    fontSize: 17,
     color: '#fff',
   },
 });
