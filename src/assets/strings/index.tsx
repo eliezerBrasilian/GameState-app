@@ -37,6 +37,7 @@ const strings = {
   err_invalid_password: 'A senha está incorreta :(',
   url_on: 'https://game-state-backend-4ww3.vercel.app/',
   url_localhost: 'http://192.168.100.31:80',
+  //url_localhost: 'http://192.168.43.144:80',
   save_edit: 'Salvar edição',
   edit_cover: 'Editar capa',
 };

@@ -17,7 +17,7 @@ import {SkypeIndicator} from 'react-native-indicators';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 function Body() {
-  const {user, signOut, userPhoto, setUserPhoto} = useContext(AuthContext);
+  const {user, signOut, userPhoto} = useContext(AuthContext);
   const [username, setUsername] = useState(user.username);
   const [profilePhoto, setProfilePhoto] = useState(userPhoto);
   const [isLoadingPhoto, setLoadingPhoto] = useState(true);
@@ -38,11 +38,15 @@ function Body() {
         AsyncStorage.setItem(
           '@profilePhoto',
           r.data.profilePhoto[0].profile_photo,
-        );
-        setLoadingPhoto(false);
+        ).then(() => {
+          setLoadingPhoto(false);
+        });
       })
       .catch(e => {
-        console.log(e);
+        console.log(
+          'SRC/PAGES/HOME/PROFILE/PROFILE/BODY/getProfilePhoto() - erro:' +
+            e.response,
+        );
         setLoadingPhoto(false);
       });
   }
@@ -65,16 +69,30 @@ function Body() {
         const ra = response.assets;
         const imagePath = ra[0].uri;
 
-        //const cleanedPath = imagePath.replace('file:///', '/');
-
+        const formData = new FormData();
+        formData.append('capa', {
+          uri: imagePath,
+          type: 'image/jpeg',
+          name: 'img-' + Date.now(),
+        });
+        formData.append('user_id', user.id);
+        setLoadingPhoto(true);
         await api
-          .post('/user/profile/photo', {imagePath: imagePath, id: user.id})
+          .post('/user/profile/photo', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
           .then(r => {
             console.log(r.data);
             getProfilePhoto();
           })
           .catch(e => {
-            console.log(e.response);
+            console.log(
+              'SRC/PAGES/HOME/PROFILE/BODY/LAUNCHLIBRARY() - erro:' +
+                e.response.data,
+            );
+            setLoadingPhoto(false);
           });
       }
     });

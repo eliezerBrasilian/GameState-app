@@ -20,7 +20,7 @@ function Card({data}) {
   const {updateInfo, setUpdateInfo} = useContext(AuthContext);
   let {nome, capa, id, finisheddate, nome_console} = data;
   const [gameName] = useState(nome);
-  const [gameCover, setGameCover] = useState(capa);
+  const [gameCover] = useState(capa);
   const [gameId] = useState(id);
   const [gameFinishedDate] = useState(finisheddate);
   const [consoleName] = useState(nome_console);

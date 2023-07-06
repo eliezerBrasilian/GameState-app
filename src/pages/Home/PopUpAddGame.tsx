@@ -18,6 +18,7 @@ import PhotoIcon from 'react-native-vector-icons/MaterialIcons';
 import {strings} from '../../assets/strings';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {launchImageLibrary} from 'react-native-image-picker';
+import RNFS from 'react-native-fs';
 function PopUpAddGame() {
   const {user, isPopUpVisible, setPopUpVisible, updateInfo, setUpdateInfo} =
     useContext(AuthContext);
@@ -68,34 +69,34 @@ function PopUpAddGame() {
     });
   }
 
-  function splitImage() {
-    var string = capa;
-    var parts = string.split('/cache/');
-    return parts[1].split('/').pop();
-  }
   async function savingGame() {
-    if (capa !== '' && nomeJogo != '' && selected != '' && finishedDate != '') {
-      let game = {
-        id_usuario: user.id,
-        id_console: Number(selected),
-        nome: nomeJogo,
-        descricao: descricao,
-        capa: capa,
-        finisheddate: finishedDate,
-      };
-      await api
-        .post('/game', game)
-        .then(r => {
-          console.log(r.data);
-          setPopUpVisible(!isPopUpVisible);
-          setUpdateInfo(!updateInfo);
-        })
-        .catch(e => {
-          console.log('erro: ' + e);
-        });
-    } else {
-      Alert.alert('Tem algum campo faltando');
-    }
+    const formData = new FormData();
+    formData.append('capa', {
+      uri: capa,
+      type: 'image/jpeg',
+      name: 'img-' + Date.now(),
+    });
+    formData.append('id_usuario', user.id);
+    formData.append('id_console', Number(selected));
+    formData.append('nome', nomeJogo);
+    formData.append('descricao', descricao);
+    formData.append('finisheddate', finishedDate);
+
+    await api
+      .post('/game', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${user.token}`,
+        },
+      })
+      .then(r => {
+        console.log(r.data);
+        setPopUpVisible(!isPopUpVisible);
+        setUpdateInfo(!updateInfo);
+      })
+      .catch(e => {
+        console.log('erro: ' + e);
+      });
   }
 
   async function loadConsoles() {
