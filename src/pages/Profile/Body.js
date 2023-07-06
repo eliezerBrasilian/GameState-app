@@ -21,9 +21,9 @@ function Body() {
   const [username, setUsername] = useState(user.username);
   const [profilePhoto, setProfilePhoto] = useState(userPhoto);
   const [isLoadingPhoto, setLoadingPhoto] = useState(true);
-  useEffect(() => {
-    getProfilePhoto();
-  }, []);
+  // useEffect(() => {
+  //   getProfilePhoto();
+  // }, []);
 
   function handleSignOut() {
     signOut();
