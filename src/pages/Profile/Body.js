@@ -21,9 +21,20 @@ function Body() {
   const [username, setUsername] = useState(user.username);
   const [profilePhoto, setProfilePhoto] = useState(userPhoto);
   const [isLoadingPhoto, setLoadingPhoto] = useState(true);
-  // useEffect(() => {
-  //   getProfilePhoto();
-  // }, []);
+  useEffect(() => {
+    async function getImageFromStorage() {
+      try {
+        const photo = await AsyncStorage.getItem('@profilePhoto');
+        setProfilePhoto(photo);
+        setLoadingPhoto(false);
+        // setUpdateInfo(true);
+      } catch (e) {
+        console.log('HOME - HEADER - ERROR ON BRING IMAGE');
+        setLoadingPhoto(false);
+      }
+    }
+    getImageFromStorage();
+  }, []);
 
   function handleSignOut() {
     signOut();
