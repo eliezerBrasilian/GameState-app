@@ -30,7 +30,6 @@ function PopUpAddGame() {
   const [finishedDate, setFinishedDate] = useState('');
 
   useEffect(() => {
-    console.log('MODAL component');
     loadConsoles();
   }, []);
   const options = {

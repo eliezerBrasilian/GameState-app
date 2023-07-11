@@ -1,4 +1,4 @@
-import {ScrollView, TouchableOpacity, Text, Image} from 'react-native';
+import {ScrollView, TouchableOpacity, Text, Image, Alert} from 'react-native';
 import {useState, useEffect, useContext} from 'react';
 import {AuthContext} from '../../../contexts/AuthContext';
 import {AppContext} from '../../../contexts/AppContext';
@@ -16,19 +16,19 @@ import {Footer, Header, MainView, s, Body, Title} from './style';
 export default function EditGame() {
   const route = useRoute();
   const {user, updateInfo, setUpdateInfo} = useContext(AuthContext);
-  const {isShowingModalEdit, setShowingModalEdit} = useContext(AppContext);
   const [data, setData] = useState([]);
+  const [gameId] = useState(route.params.gameId);
   const [gameCover, setCover] = useState(route.params.gameCover);
   const [gameName, setGameName] = useState(route.params.gameName);
   const [gameFinishedDate, setGameFinishedDate] = useState(
     route.params.gameFinishedDate,
   );
+  const [consoleId, setConsoleId] = useState(route.params.consoleId);
 
-  const [selected, setSelected] = useState('1');
+  const [selected, setSelected] = useState(String(consoleId));
 
   useEffect(() => {
-    console.log('GAME ID - EDIT PAGE: ' + route.params.gameId);
-
+    console.log(consoleId);
     loadConsoles();
   }, []);
   const options = {
@@ -38,6 +38,49 @@ export default function EditGame() {
       path: 'images',
     },
   };
+  async function editGame() {
+    const formData = new FormData();
+    formData.append('capa', {
+      uri: gameCover,
+      type: 'image/jpeg',
+      name: 'img-' + Date.now(),
+    });
+    formData.append('id_usuario', user.id);
+    formData.append('id_game', gameId);
+    formData.append('id_console', Number(selected));
+    formData.append('nome', gameName);
+    formData.append('finisheddate', gameFinishedDate);
+    await api
+      .post('edit/game', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${user.token}`,
+        },
+      })
+      .then(r => {
+        console.log(r.data);
+        setUpdateInfo(!updateInfo);
+        Alert.alert(strings.game_updated);
+      })
+      .catch(async e => {
+        console.log(`${e} - pages/EditGame/editGame()`);
+        await api
+          .post('edit/game', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${user.token}`,
+            },
+          })
+          .then(r => {
+            console.log(r.data);
+            setUpdateInfo(!updateInfo);
+            Alert.alert(strings.game_updated);
+          })
+          .catch(e => {
+            console.log(`${e} - pages/EditGame/editGame()`);
+          });
+      });
+  }
 
   async function launchLibrary() {
     launchImageLibrary(options, async response => {
@@ -138,7 +181,7 @@ export default function EditGame() {
             />
           </InputView>
 
-          <TouchableOpacity style={[s.btn, {marginTop: 15}]}>
+          <TouchableOpacity onPress={editGame} style={[s.btn, {marginTop: 15}]}>
             <Text style={[s.btnText, {fontSize: 20}]}>{strings.save_edit}</Text>
           </TouchableOpacity>
         </Body>

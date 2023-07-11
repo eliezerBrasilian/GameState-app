@@ -40,6 +40,7 @@ const strings = {
   //url_localhost: 'http://192.168.43.144:80',
   save_edit: 'Salvar edição',
   edit_cover: 'Editar capa',
+  game_updated: 'Jogo atualizado com sucesso :)',
 };
 
 export {strings};

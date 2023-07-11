@@ -18,18 +18,19 @@ function Card({data}) {
   const nav = useNavigation();
   const isFocused = useIsFocused();
   const {updateInfo, setUpdateInfo} = useContext(AuthContext);
-  let {nome, capa, id, finisheddate, nome_console} = data;
+  let {nome, capa, id, finisheddate, nome_console, id_console} = data;
   const [gameName] = useState(nome);
   const [gameCover] = useState(capa);
   const [gameId] = useState(id);
   const [gameFinishedDate] = useState(finisheddate);
   const [consoleName] = useState(nome_console);
+  const [consoleId] = useState(id_console);
   useEffect(() => {
     if (isFocused) {
       // var string = capa;
       // var parts = string.split('/cache/');
       // var conteudo = parts[1];
-      // console.log(conteudo); // rn_image_picker_lib_temp_2324df2f-023d-4386-827a-cba48eca8e7f.jpg
+      console.log(data); // rn_image_picker_lib_temp_2324df2f-023d-4386-827a-cba48eca8e7f.jpg
       // setGameCover(conteudo);
     }
   }, []);
@@ -39,6 +40,7 @@ function Card({data}) {
       gameCover: String(gameCover),
       gameFinishedDate: String(gameFinishedDate),
       gameName: String(gameName),
+      consoleId: Number(consoleId),
     });
   }
 
