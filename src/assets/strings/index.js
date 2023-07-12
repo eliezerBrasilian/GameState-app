@@ -41,6 +41,11 @@ const strings = {
   save_edit: 'Salvar edição',
   edit_cover: 'Editar capa',
   game_updated: 'Jogo atualizado com sucesso :)',
+  dont_have_account: 'Não tenho conta',
+  already_have_an_account: 'Já tenho minha conta',
+  sign_up: 'Cadastrar',
+  name: 'Nome',
+  create_password: 'Crie uma senha',
 };
 
 export {strings};

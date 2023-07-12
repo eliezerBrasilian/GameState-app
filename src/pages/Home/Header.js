@@ -8,7 +8,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 function Header() {
   const [isLoadingPhoto, setLoadingPhoto] = useState(true);
-  const [profilePhoto, setProfilePhoto] = useState('');
+  const [profilePhoto, setProfilePhoto] = useState(user);
   const nav = useNavigation();
   const {user} = useContext(AuthContext);
   const isFocused = useIsFocused();
@@ -52,7 +52,7 @@ function Header() {
           )}
         </TouchableOpacity>
         <View style={{marginLeft: 10}}>
-          <Name>{user.nome}</Name>
+          <Name>{user.name}</Name>
           {user.username === undefined ? (
             <Username>@arturgamer</Username>
           ) : (

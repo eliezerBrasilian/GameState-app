@@ -1,6 +1,14 @@
 import styled from 'styled-components';
 import {TextInput, StyleSheet} from 'react-native';
-function Input({color, placeholder, value, setValue, icon}) {
+function Input({
+  color,
+  placeholder,
+  value,
+  setValue,
+  icon,
+  keyboardType = 'default',
+  isPassword = false,
+}) {
   return (
     <InputView color={color}>
       {icon}
@@ -10,6 +18,8 @@ function Input({color, placeholder, value, setValue, icon}) {
         placeholderTextColor="#fff"
         value={value}
         onChangeText={t => setValue(t)}
+        keyboardType={keyboardType}
+        secureTextEntry={isPassword}
       />
     </InputView>
   );

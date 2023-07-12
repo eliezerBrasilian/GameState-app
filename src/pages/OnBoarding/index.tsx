@@ -137,7 +137,6 @@ const styles = StyleSheet.create({
   },
   PagerView: {
     flex: 1,
-    // height: '70%',
   },
 
   progressContainer: {flex: 0.1, backgroundColor: colors.game_title},
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
   },
 
   dotsContainer: {
-    marginBottom: 150,
+    marginBottom: '30%',
     justifyContent: 'space-evenly',
   },
   img: {

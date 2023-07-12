@@ -17,7 +17,7 @@ function Btn({method, title = strings.start}) {
         justifyContent: 'center',
       }}>
       {isLoadingAuth ? (
-        <ActivityIndicator color="#000" size={20} />
+        <ActivityIndicator color="#000" size={25} />
       ) : (
         <Text style={{color: '#000', fontWeight: '500', fontSize: 19}}>
           {title}

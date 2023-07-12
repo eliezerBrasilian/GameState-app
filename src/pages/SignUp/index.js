@@ -4,7 +4,6 @@ import {
   View,
   ScrollView,
   Image,
-  StyleSheet,
   Text,
   Alert,
 } from 'react-native';
@@ -15,24 +14,30 @@ import {colors} from '../../assets/colors';
 import {strings} from '../../assets/strings';
 import Btn from '../../assets/components/Btn';
 import Input from '../../assets/components/Input';
-import {s} from './style';
+import {s} from '../Login/style';
 import {useNavigation} from '@react-navigation/native';
-function Login() {
+
+function SignUp() {
   const nav = useNavigation();
-  const {login} = useContext(AuthContext);
+  const {signUp} = useContext(AuthContext);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function goToSignUp() {
-    nav.navigate('SignUp');
+  function goToLogin() {
+    nav.navigate('Login');
   }
-  async function handleLogin() {
-    if (email.trim() !== '' && password.trim() !== '') {
-      const response = await login(email, password);
+  async function handleSignUp() {
+    if (name.trim() !== '' && email.trim() !== '' && password.trim() !== '') {
+      const response = await signUp(name, email, password);
       if (response == 406) {
         Alert.alert(strings.err_invalid_password);
       } else if (response == 404) {
         Alert.alert(strings.err_invalid_email);
+      } else if (response == 200) {
+        Alert.alert('Game state', 'Conta criada com sucesso!', [
+          {text: 'Aí sim ;)', onPress: () => goToLogin()},
+        ]);
       }
     } else {
       Alert.alert(strings.fill_all);
@@ -53,6 +58,13 @@ function Login() {
         />
         <Input
           color={colors.game_title}
+          placeholder={strings.name}
+          value={name}
+          setValue={setName}
+          icon={<Icon name="user" color={colors.game_title} size={25} />}
+        />
+        <Input
+          color={colors.game_title}
           placeholder={strings.email}
           value={email}
           setValue={setEmail}
@@ -61,33 +73,24 @@ function Login() {
         />
         <Input
           color={colors.btn_editar}
-          placeholder={strings.password}
+          placeholder={strings.create_password}
           value={password}
           setValue={setPassword}
           isPassword={true}
           icon={<LockIcon name="lock" color={colors.btn_editar} size={25} />}
         />
 
-        <TouchableOpacity
-          style={{
-            maxWidth: '60%',
-            alignSelf: 'flex-end',
-            marginRight: 10,
-            marginTop: 10,
-          }}>
-          <Text style={{color: '#fff', fontSize: 13}}>
-            {strings.recovery_password}
-          </Text>
-        </TouchableOpacity>
         <View style={{marginHorizontal: 10, marginTop: 15}}>
-          <Btn method={handleLogin} title={strings.enter} />
+          <Btn method={handleSignUp} title={strings.sign_up} />
         </View>
-        <TouchableOpacity onPress={goToSignUp} style={s.donHaveAccountBtn}>
-          <Text style={s.donHaveAccountText}>{strings.dont_have_account}</Text>
+        <TouchableOpacity onPress={goToLogin} style={s.donHaveAccountBtn}>
+          <Text style={s.donHaveAccountText}>
+            {strings.already_have_an_account}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
   );
 }
 
-export default Login;
+export default SignUp;

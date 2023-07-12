@@ -58,35 +58,51 @@ export default function AuthProvider({children}) {
       }
     }
   }
+  async function signUp(name, email, password) {
+    //
+    try {
+      const response = await api.post('/user', {
+        name,
+        email,
+        password,
+      });
+      console.log(response.status);
+      return response.status;
+    } catch (error) {
+      console.log(error.response.data);
+      return response.status;
+    }
+  }
   async function login(email, password) {
     setLoadingAuth(true);
     let respStatus = 0;
     await api
       .post('/user/login', {
-        email: email,
-        senha: password,
+        email,
+        password,
       })
       .then(response => {
         setLoadingAuth(false);
-
-        const {id, nome, email, isPremium, token, username, profilePhoto} =
+        console.log(response.data);
+        const {id, name, email, isPremium, token, username, profilePhoto} =
           response.data;
         const data = {
           id,
-          nome,
+          name,
           email,
           isPremium,
           token,
           username,
           profilePhoto,
         };
-        api.defaults.headers['Authorization'] = `Bearer ${token}`;
-        setUser(data);
+
         setUserPhoto(profilePhoto);
         AsyncStorage.setItem('@profilePhoto', profilePhoto);
         AsyncStorage.setItem('@token', token);
         AsyncStorage.setItem('@userData', JSON.stringify(data));
         respStatus = 200;
+        loadData();
+        setUser(data);
       })
       .catch(e => {
         console.log(e.response.data);
@@ -102,6 +118,7 @@ export default function AuthProvider({children}) {
         user,
         signed: !!user,
         login,
+        signUp,
         saveGame,
         updateInfo,
         setUpdateInfo,
