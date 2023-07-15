@@ -7,7 +7,6 @@ import {
   View,
   TouchableOpacity,
   Text,
-  Alert,
   Image,
 } from 'react-native';
 import {useState, useEffect, useContext} from 'react';
@@ -18,7 +17,7 @@ import PhotoIcon from 'react-native-vector-icons/MaterialIcons';
 import {strings} from '../../assets/strings';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {launchImageLibrary} from 'react-native-image-picker';
-import RNFS from 'react-native-fs';
+
 function PopUpAddGame() {
   const {user, isPopUpVisible, setPopUpVisible, updateInfo, setUpdateInfo} =
     useContext(AuthContext);
@@ -33,7 +32,7 @@ function PopUpAddGame() {
     loadConsoles();
   }, []);
   const options = {
-    title: 'Selecione uma imagem',
+    title: strings.select_image,
 
     storageOptions: {
       skipBackup: true,
@@ -53,17 +52,6 @@ function PopUpAddGame() {
         const imagePath = ra[0].uri;
 
         setCapa(imagePath);
-        //const cleanedPath = imagePath.replace('file:///', '/');
-
-        // await api
-        //   .post('/user/profile/photo', {imagePath: imagePath, id: user.id})
-        //   .then(r => {
-        //     console.log(r.data);
-        //     getProfilePhoto();
-        //   })
-        //   .catch(e => {
-        //     console.log(e.response);
-        //   });
       }
     });
   }
@@ -102,9 +90,6 @@ function PopUpAddGame() {
     await api
       .get('/consoles')
       .then(r => {
-        // console.log(r.data.consoles);
-        //   setConsoles(r.data.consoles);
-
         let newArray = r.data.consoles.map(item => {
           console.log(item);
           return {key: item.id, value: item.nome};

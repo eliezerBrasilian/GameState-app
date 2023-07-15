@@ -46,6 +46,14 @@ const strings = {
   sign_up: 'Cadastrar',
   name: 'Nome',
   create_password: 'Crie uma senha',
+  account_created: 'Conta criada com sucesso!',
+  thats_it: 'Aí sim ;)',
+  game_state_title: 'Game state',
+  select_image: 'Selecione uma imagem',
+  profile_title: 'Perfil',
+  alter_username: 'Alterar',
+  username_was_alterd: 'Username alterado com sucesso!',
+  username_already_is_used: 'Este username já está em uso!',
 };
 
 export {strings};

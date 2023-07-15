@@ -6,11 +6,13 @@ export const AuthContext = createContext({});
 export default function AuthProvider({children}) {
   const [user, setUser] = useState(null);
   const [userPhoto, setUserPhoto] = useState('');
+  const [username, setUsername] = useState('');
   const [updateInfo, setUpdateInfo] = useState(false);
   const [isPopUpVisible, setPopUpVisible] = useState(false);
   const [isLoadingAuth, setLoadingAuth] = useState(false);
   const [errDescription, setErrDescription] = useState('');
   useEffect(() => {
+    setLoadingAuth(true);
     loadData();
   }, []);
 
@@ -25,15 +27,15 @@ export default function AuthProvider({children}) {
       });
   }
 
-  async function saveGame(game) {
-    const response = await api.post('/game', game);
-    console.log(response.data);
-    console.log(response.data.success);
-  }
   async function loadData() {
     const token = await AsyncStorage.getItem('@token');
     const ud = await AsyncStorage.getItem('@userData');
     const pPhoto = await AsyncStorage.getItem('@profilePhoto');
+    const username = await AsyncStorage.getItem('@username');
+    if (username) {
+      console.log('USERNAME: ' + username);
+      setUsername(username);
+    }
     if (pPhoto) {
       setUserPhoto(pPhoto);
     }
@@ -53,18 +55,20 @@ export default function AuthProvider({children}) {
         setUser(response.data);
         console.log('usuario setado');
         console.log(response.data);
+        setLoadingAuth(false);
       } catch (e) {
         console.log('sem internet');
+        setLoadingAuth(false);
       }
     }
   }
-  async function signUp(name, email, password) {
-    //
+  async function signUp(name, email, password, username) {
     try {
       const response = await api.post('/user', {
         name,
         email,
         password,
+        username,
       });
       console.log(response.status);
       return response.status;
@@ -97,7 +101,10 @@ export default function AuthProvider({children}) {
         };
 
         setUserPhoto(profilePhoto);
+        setUsername(username);
         AsyncStorage.setItem('@profilePhoto', profilePhoto);
+        AsyncStorage.setItem('@username', username);
+        AsyncStorage.setItem('username', username);
         AsyncStorage.setItem('@token', token);
         AsyncStorage.setItem('@userData', JSON.stringify(data));
         respStatus = 200;
@@ -119,7 +126,6 @@ export default function AuthProvider({children}) {
         signed: !!user,
         login,
         signUp,
-        saveGame,
         updateInfo,
         setUpdateInfo,
         isPopUpVisible,
@@ -130,6 +136,8 @@ export default function AuthProvider({children}) {
         errDescription,
         userPhoto,
         setUserPhoto,
+        username,
+        setUsername,
       }}>
       {children}
     </AuthContext.Provider>

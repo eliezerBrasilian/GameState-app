@@ -8,9 +8,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 function Header() {
   const [isLoadingPhoto, setLoadingPhoto] = useState(true);
-  const [profilePhoto, setProfilePhoto] = useState(user);
+  const [profilePhoto, setProfilePhoto] = useState('');
   const nav = useNavigation();
-  const {user} = useContext(AuthContext);
+  const {user, username} = useContext(AuthContext);
+  const [_username, setUsername] = useState(username);
   const isFocused = useIsFocused();
   function goToProfile() {
     nav.navigate('Profile');
@@ -21,6 +22,7 @@ function Header() {
       getProfilePhoto();
     }
   }, [isFocused]);
+
   async function getProfilePhoto() {
     try {
       const photo = await AsyncStorage.getItem('@profilePhoto');
@@ -54,13 +56,15 @@ function Header() {
         <View style={{marginLeft: 10}}>
           <Name>{user.name}</Name>
           {user.username === undefined ? (
-            <Username>@arturgamer</Username>
+            <Username>@gamestate</Username>
           ) : (
-            <Username>@{user.username}</Username>
+            <Username>@{username}</Username>
           )}
         </View>
       </View>
-      <PremiumIcon source={require('../../assets/img/premium_.png')} />
+      {user.isPremium && (
+        <PremiumIcon source={require('../../assets/img/premium_.png')} />
+      )}
     </HeaderView>
   );
 }

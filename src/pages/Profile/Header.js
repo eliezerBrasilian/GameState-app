@@ -1,9 +1,14 @@
 import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import {useContext} from 'react';
+import {AuthContext} from '../../contexts/AuthContext';
 import {colors} from '../../assets/colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
+import {strings} from '../../assets/strings';
+import api from '../../services/api';
 
-function Header({marginTop = 20, title = 'Perfil'}) {
+function Header({marginTop = 20, title = strings.profile_title}) {
+  const {username, user} = useContext(AuthContext);
   const nav = useNavigation();
   function goBack() {
     nav.goBack();

@@ -22,21 +22,27 @@ function SignUp() {
   const {signUp} = useContext(AuthContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   function goToLogin() {
     nav.navigate('Login');
   }
   async function handleSignUp() {
-    if (name.trim() !== '' && email.trim() !== '' && password.trim() !== '') {
-      const response = await signUp(name, email, password);
+    if (
+      name.trim() !== '' &&
+      email.trim() !== '' &&
+      password.trim() !== '' &&
+      username.trim() !== ''
+    ) {
+      const response = await signUp(name, email, password, username);
       if (response == 406) {
         Alert.alert(strings.err_invalid_password);
       } else if (response == 404) {
         Alert.alert(strings.err_invalid_email);
       } else if (response == 200) {
-        Alert.alert('Game state', 'Conta criada com sucesso!', [
-          {text: 'Aí sim ;)', onPress: () => goToLogin()},
+        Alert.alert(strings.game_state_title, strings.account_created, [
+          {text: strings.thats_it, onPress: () => goToLogin()},
         ]);
       }
     } else {
@@ -58,6 +64,14 @@ function SignUp() {
         />
         <Input
           color={colors.game_title}
+          placeholder={strings.email}
+          value={email}
+          setValue={setEmail}
+          keyboardType="email-address"
+          icon={<Icon name="user" color={colors.game_title} size={25} />}
+        />
+        <Input
+          color={colors.game_title}
           placeholder={strings.name}
           value={name}
           setValue={setName}
@@ -65,12 +79,12 @@ function SignUp() {
         />
         <Input
           color={colors.game_title}
-          placeholder={strings.email}
-          value={email}
-          setValue={setEmail}
-          keyboardType="email-address"
+          placeholder={strings.username_label}
+          value={username}
+          setValue={setUsername}
           icon={<Icon name="user" color={colors.game_title} size={25} />}
         />
+
         <Input
           color={colors.btn_editar}
           placeholder={strings.create_password}

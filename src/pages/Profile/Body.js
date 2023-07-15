@@ -5,6 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  Alert,
+  ToastAndroid,
 } from 'react-native';
 import {colors} from '../../assets/colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,9 +18,10 @@ import api from '../../services/api';
 import {SkypeIndicator} from 'react-native-indicators';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
+
 function Body() {
-  const {user, signOut, userPhoto} = useContext(AuthContext);
-  const [username, setUsername] = useState(user.username);
+  const {user, signOut, userPhoto, username, setUsername} =
+    useContext(AuthContext);
   const [profilePhoto, setProfilePhoto] = useState(userPhoto);
   const [isLoadingPhoto, setLoadingPhoto] = useState(true);
   useEffect(() => {
@@ -36,6 +39,28 @@ function Body() {
     getImageFromStorage();
   }, []);
 
+  async function updateUsername() {
+    try {
+      const response = await api.put('/user/username', {
+        user_id: user.id,
+        username: username,
+      });
+      if (response && response.data) {
+        ToastAndroid.show(strings.username_was_alterd, ToastAndroid.SHORT);
+        console.log('SUCESSO: ' + response.data);
+        await AsyncStorage.setItem('@username', username);
+      } else {
+        console.log('Resposta inválida da API');
+      }
+    } catch (error) {
+      console.log(error.response && error.response.data);
+      ToastAndroid.showWithGravity(
+        strings.username_already_is_used,
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  }
   function handleSignOut() {
     signOut();
   }
@@ -62,7 +87,7 @@ function Body() {
       });
   }
   const options = {
-    title: 'Selecione uma imagem',
+    title: strings.select_image,
     storageOptions: {
       skipBackup: true,
       path: 'images',
@@ -135,14 +160,20 @@ function Body() {
 
       <View style={s.belowArea}>
         <Text style={s.label}>{strings.username_label}</Text>
-        <View style={s.inputArea}>
-          <TextInput
-            style={s.input}
-            value={username}
-            onChangeText={t => setUsername(t)}
-          />
-          <Icon name="pencil" size={20} color={colors.btn_editar} />
+        <View style={{flexDirection: 'row', width: '100%', columnGap: 20}}>
+          <View style={s.inputArea}>
+            <TextInput
+              style={s.input}
+              value={username}
+              onChangeText={t => setUsername(t)}
+            />
+            <Icon name="pencil" size={20} color={colors.btn_editar} />
+          </View>
+          <TouchableOpacity onPress={updateUsername} style={s.saveUsernameBtn}>
+            <Text style={s.saveUsernameText}>{strings.alter_username}</Text>
+          </TouchableOpacity>
         </View>
+
         <TouchableOpacity style={s.btnDestroyAds}>
           <Text style={[s.btnText, {color: '#000', fontSize: 18}]}>
             {strings.destroy_ads}
@@ -172,6 +203,21 @@ const s = StyleSheet.create({
   container: {
     marginTop: 40,
     alignItems: 'center',
+  },
+  saveUsernameBtn: {
+    width: '40%',
+    backgroundColor: 'red',
+    borderColor: colors.btn_editar,
+    borderStyle: 'solid',
+    borderWidth: 2,
+    paddingHorizontal: 10,
+    borderRadius: 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  saveUsernameText: {
+    color: '#fff',
+    fontSize: 19,
   },
   img: {
     height: 202,
@@ -203,6 +249,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    width: '55%',
   },
   input: {
     color: '#fff',

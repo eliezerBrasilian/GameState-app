@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import {useState, useContext, useEffect} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
-import {AppContext} from '../../contexts/AppContext';
 import {colors} from '../../assets/colors';
 import {strings} from '../../assets/strings';
 import api from '../../services/api';
