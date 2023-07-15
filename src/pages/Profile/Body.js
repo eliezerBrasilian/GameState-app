@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  Alert,
   ToastAndroid,
 } from 'react-native';
 import {colors} from '../../assets/colors';
@@ -114,7 +113,7 @@ function Body() {
         formData.append('user_id', user.id);
         setLoadingPhoto(true);
         await api
-          .post('/user/profile/photo', formData, {
+          .put('/user/profile/photo', formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
@@ -178,6 +177,10 @@ function Body() {
           <Text style={[s.btnText, {color: '#000', fontSize: 18}]}>
             {strings.destroy_ads}
           </Text>
+          <Image
+            source={require('../../assets/img/premium_.png')}
+            style={{height: 45, width: 45}}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleSignOut}
@@ -268,10 +271,11 @@ const s = StyleSheet.create({
     backgroundColor: colors.btn_editar,
     marginTop: 15,
     paddingHorizontal: 50,
-    paddingVertical: 15,
+    paddingVertical: 7,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 9,
+    flexDirection: 'row',
   },
 });
 export default Body;

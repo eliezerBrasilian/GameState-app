@@ -35,7 +35,7 @@ const strings = {
   fill_all: 'Preencha todos os campos :(',
   err_invalid_email: 'Este email é inválido :(',
   err_invalid_password: 'A senha está incorreta :(',
-  url_on: 'https://game-state-backend-4ww3.vercel.app/',
+  url_production: 'http://137.184.26.92',
   url_localhost: 'http://192.168.100.31:80',
   //url_localhost: 'http://192.168.43.144:80',
   save_edit: 'Salvar edição',
@@ -54,6 +54,10 @@ const strings = {
   alter_username: 'Alterar',
   username_was_alterd: 'Username alterado com sucesso!',
   username_already_is_used: 'Este username já está em uso!',
+  share_your_finished_game: 'Compartilhar sua conquista 😎',
+  game_i_finished_name: 'Haha, zerei ',
+  gamestate_link:
+    'Eu uso o Gamestate pra registrar os games que eu finalizo, link',
 };
 
 export {strings};

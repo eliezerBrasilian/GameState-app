@@ -4,7 +4,7 @@ import {TouchableOpacity, Text, ActivityIndicator} from 'react-native';
 import {useContext} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
 function Btn({method, title = strings.start}) {
-  const {isLoadingAuth, setLoadingAuth} = useContext(AuthContext);
+  const {isLoadingAuth} = useContext(AuthContext);
   return (
     <TouchableOpacity
       onPress={method}

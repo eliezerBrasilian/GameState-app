@@ -5,9 +5,9 @@ import AppRoutes from './app.routes';
 import {Text, View} from 'react-native';
 import {UIActivityIndicator} from 'react-native-indicators';
 export default function Routes() {
-  const {signed, isLoadingAuth} = useContext(AuthContext);
+  const {signed, isLoadingApp} = useContext(AuthContext);
 
-  if (isLoadingAuth) {
+  if (isLoadingApp) {
     return (
       <View
         style={{

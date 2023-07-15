@@ -10,9 +10,9 @@ export default function AuthProvider({children}) {
   const [updateInfo, setUpdateInfo] = useState(false);
   const [isPopUpVisible, setPopUpVisible] = useState(false);
   const [isLoadingAuth, setLoadingAuth] = useState(false);
+  const [isLoadingApp, setLoadingApp] = useState(true);
   const [errDescription, setErrDescription] = useState('');
   useEffect(() => {
-    setLoadingAuth(true);
     loadData();
   }, []);
 
@@ -28,41 +28,49 @@ export default function AuthProvider({children}) {
   }
 
   async function loadData() {
+    console.log('aqui');
     const token = await AsyncStorage.getItem('@token');
     const ud = await AsyncStorage.getItem('@userData');
     const pPhoto = await AsyncStorage.getItem('@profilePhoto');
     const username = await AsyncStorage.getItem('@username');
-    if (username) {
-      console.log('USERNAME: ' + username);
-      setUsername(username);
-    }
-    if (pPhoto) {
-      setUserPhoto(pPhoto);
-    }
+
     if (ud) {
       console.log('usuario ja existe');
       setUser(JSON.parse(ud));
-    }
-    if (token) {
-      console.log('token existe');
-      try {
-        const response = await api.get('/me', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        api.defaults.headers['Authorization'] = `Bearer ${token}`;
-        setUser(response.data);
-        console.log('usuario setado');
-        console.log(response.data);
-        setLoadingAuth(false);
-      } catch (e) {
-        console.log('sem internet');
-        setLoadingAuth(false);
+      if (username) {
+        console.log('USERNAME: ' + username);
+        setUsername(username);
       }
+      if (pPhoto) {
+        setUserPhoto(pPhoto);
+      }
+      if (token) {
+        console.log('token existe');
+        try {
+          const response = await api.get('/me', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          api.defaults.headers['Authorization'] = `Bearer ${token}`;
+          setUser(response.data);
+          console.log('usuario setado');
+          console.log(response.data);
+          setLoadingAuth(false);
+        } catch (e) {
+          console.log('sem internet');
+          setLoadingApp(false);
+        }
+      }
+      setLoadingApp(false);
+    }
+
+    if (ud == null) {
+      setLoadingApp(false);
     }
   }
   async function signUp(name, email, password, username) {
+    setLoadingAuth(true);
     try {
       const response = await api.post('/user', {
         name,
@@ -75,6 +83,8 @@ export default function AuthProvider({children}) {
     } catch (error) {
       console.log(error.response.data);
       return response.status;
+    } finally {
+      setLoadingAuth(false);
     }
   }
   async function login(email, password) {
@@ -86,7 +96,6 @@ export default function AuthProvider({children}) {
         password,
       })
       .then(response => {
-        setLoadingAuth(false);
         console.log(response.data);
         const {id, name, email, isPremium, token, username, profilePhoto} =
           response.data;
@@ -116,6 +125,9 @@ export default function AuthProvider({children}) {
         const {status} = e.response;
         setLoadingAuth(false);
         respStatus = status;
+      })
+      .finally(() => {
+        setLoadingAuth(false);
       });
     return respStatus;
   }
@@ -124,6 +136,8 @@ export default function AuthProvider({children}) {
       value={{
         user,
         signed: !!user,
+        isLoadingApp,
+        setLoadingApp,
         login,
         signUp,
         updateInfo,
