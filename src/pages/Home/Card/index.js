@@ -43,6 +43,14 @@ function Card(props) {
     interstitial.load();
   }, []);
 
+  useEffect(() => {
+    Image.getSize(gameCover, (width, height) => {
+      console.log('aqui');
+      setImageSize({width: width, height: height});
+      setImageLoaded(true);
+    });
+  }, [gameCover]);
+
   const startAnimation = () => {
     touchableOpacityRef.current?.animate(
       {
@@ -53,19 +61,6 @@ function Card(props) {
       1000,
     );
   };
-  useEffect(() => {
-    startAnimation();
-    return () => clearTimeout(animationTimeout);
-  }, []);
-
-  useEffect(() => {
-    Image.getSize(gameCover, (width, height) => {
-      console.log('aqui');
-      setImageSize({width: width, height: height});
-      setImageLoaded(true);
-    });
-  }, [gameCover]);
-
   function handleImageLoad(e) {
     console.log('carregando');
     const {width, height} = e.nativeEvent;
@@ -187,26 +182,25 @@ function Card(props) {
             style={{
               ...StyleSheet.absoluteFillObject,
               alignItems: 'flex-end',
-              paddingTop: 50,
+              paddingTop: 25,
               paddingRight: 7,
             }}>
-            <Animatable.View ref={touchableOpacityRef}>
-              <View
-                style={{
-                  backgroundColor: 'rgba(204, 187, 239, 0.8)',
-                  padding: 10,
-                  rowGap: 20,
-                }}>
-                <TouchableOpacity activeOpacity={1} onPress={handleCapture}>
-                  <ShareIcon name="share-alt" size={25} color="#fff" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={editGamePopUp}>
-                  <ShareIcon name="edit" size={25} color="#fff" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={deleteGame}>
-                  <ShareIcon name="trash" size={25} color="#fff" />
-                </TouchableOpacity>
-              </View>
+            <Animatable.View
+              ref={touchableOpacityRef}
+              style={{
+                backgroundColor: 'rgba(204, 187, 239, 0.8)',
+                padding: 10,
+                rowGap: 20,
+              }}>
+              <TouchableOpacity activeOpacity={1} onPress={handleCapture}>
+                <ShareIcon name="share-alt" size={25} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={editGamePopUp}>
+                <ShareIcon name="edit" size={25} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={deleteGame}>
+                <ShareIcon name="trash" size={25} color="#fff" />
+              </TouchableOpacity>
             </Animatable.View>
           </View>
           {gameDescription && (

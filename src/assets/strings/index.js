@@ -13,7 +13,7 @@ const strings = {
   finished_date_label: 'Quando você zerou o game?',
   cover_placeholder: 'Link da imagem do jogo',
   game_name_placeholder: 'Digite o nome do jogo',
-  game_desc_placeholder: 'Ex: jogo de plataforma, finalizei com 2 meses...',
+  game_desc_placeholder: 'Adicione uma descrição...',
   plataform_placeholder: 'Steam',
   finished_date_placeholder: 'Ex: 17/05/2019 por volta de 19h',
   selecione: 'Selecione',

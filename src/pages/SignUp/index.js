@@ -22,20 +22,14 @@ function SignUp() {
   const {signUp} = useContext(AuthContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   function goToLogin() {
     nav.navigate('Login');
   }
   async function handleSignUp() {
-    if (
-      name.trim() !== '' &&
-      email.trim() !== '' &&
-      password.trim() !== '' &&
-      username.trim() !== ''
-    ) {
-      const response = await signUp(name, email, password, username);
+    if (name.trim() !== '' && email.trim() !== '' && password.trim() !== '') {
+      const response = await signUp(name, email, password);
       if (response == 400) {
         Alert.alert(strings.err_invalid_email);
       } else if (response == 406) {

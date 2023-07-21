@@ -28,7 +28,6 @@ function Home() {
         .collection('games')
         .orderBy('createdAt', 'desc')
         .where('userId', '==', user.user_id)
-
         .onSnapshot(querySnapshot => {
           if (querySnapshot.empty) {
             setGamesEmpty(true);
@@ -64,7 +63,7 @@ function Home() {
       ) : (
         <FlatList
           data={games}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => item.key.toString()}
           renderItem={({item}) => <Card data={item} />}
           onEndReachedThreshold={0.1}
           numColumns={2}

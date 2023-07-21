@@ -43,12 +43,12 @@ export default function AuthProvider({children}) {
       });
   }
 
-  async function registerOnFirestore(user_id, name, email, username) {
+  async function registerOnFirestore(user_id, name, email) {
     try {
       await firestore().collection('users').doc(user_id).set({
         isAdmin: false,
         isPremium: false,
-        username: username,
+        username: '@gamestate',
         name: name,
         email: email,
         createdAt: new Date().getTime(),
@@ -61,7 +61,7 @@ export default function AuthProvider({children}) {
       return false;
     }
   }
-  async function signUp(name, email, password, username) {
+  async function signUp(name, email, password) {
     setLoadingAuth(true);
 
     try {
@@ -69,12 +69,8 @@ export default function AuthProvider({children}) {
         email,
         password,
       );
-      const isUserCreated = registerOnFirestore(
-        response.user.uid,
-        name,
-        email,
-        username,
-      );
+
+      const isUserCreated = registerOnFirestore(response.user.uid, name, email);
       return isUserCreated ? 200 : 500;
       //return 200;
     } catch (error) {

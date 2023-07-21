@@ -233,8 +233,8 @@ export default function EditGame() {
               arrowicon={<Icon name="down" color="#fff" size={20} />}
             />
             <EditInput
-              label={strings.finished_date_label}
-              placeholderText={strings.finished_date_placeholder}
+              label={strings.game_desc_label}
+              placeholderText={strings.game_desc_placeholder}
               placeholderTextColor="#000"
               value={gameDescription}
               setValue={setGameDescription}
@@ -242,7 +242,7 @@ export default function EditGame() {
             <EditInput
               label={strings.finished_date_label}
               placeholderText={strings.finished_date_placeholder}
-              placeholderTextColor="#fff"
+              placeholderTextColor="#000"
               value={gameFinishedDate}
               setValue={setGameFinishedDate}
             />
