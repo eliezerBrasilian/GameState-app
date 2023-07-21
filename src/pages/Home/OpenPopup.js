@@ -1,7 +1,7 @@
 import {Image, TouchableOpacity} from 'react-native';
 import {useContext} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
-function BtnAdd() {
+function OpenPopup() {
   const {isPopUpVisible, setPopUpVisible} = useContext(AuthContext);
   function openModal() {
     setPopUpVisible(!isPopUpVisible);
@@ -19,4 +19,4 @@ function BtnAdd() {
   );
 }
 
-export default BtnAdd;
+export default OpenPopup;

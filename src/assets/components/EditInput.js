@@ -32,7 +32,7 @@ const s = StyleSheet.create({
     borderBottomColor: 'red',
     width: '100%',
     borderRadius: 10,
-    color: '#fff',
+    color: '#000',
     fontSize: 17,
   },
 });
@@ -42,7 +42,7 @@ const InputView = styled.View`
   margin-top: 20px;
 `;
 const Label = styled.Text`
-  color: #fff;
+  color: #000;
   font-weight: 700;
   font-size: 19px;
   margin-left: 10px;

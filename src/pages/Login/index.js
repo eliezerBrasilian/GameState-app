@@ -19,8 +19,8 @@ import {useNavigation} from '@react-navigation/native';
 function Login() {
   const nav = useNavigation();
   const {login} = useContext(AuthContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('dede@gmail.com');
+  const [password, setPassword] = useState('123456');
 
   function goToSignUp() {
     nav.navigate('SignUp');
@@ -28,10 +28,14 @@ function Login() {
   async function handleLogin() {
     if (email.trim() !== '' && password.trim() !== '') {
       const response = await login(email, password);
-      if (response == 406) {
-        Alert.alert(strings.err_invalid_password);
-      } else if (response == 404) {
+      if (response == 400) {
         Alert.alert(strings.err_invalid_email);
+      } else if (response == 404) {
+        Alert.alert(strings.user_not_found);
+      } else if (response == 406) {
+        Alert.alert(strings.err_invalid_password);
+      } else if (response == 504) {
+        Alert.alert(strings.too_many_requests);
       }
     } else {
       Alert.alert(strings.fill_all);

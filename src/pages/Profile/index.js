@@ -7,7 +7,7 @@ function Profile() {
       style={{
         flex: 1,
         paddingHorizontal: 15,
-        backgroundColor: '#000',
+        backgroundColor: '#fff',
       }}>
       <ScrollView>
         <Header />

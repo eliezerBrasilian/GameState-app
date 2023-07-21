@@ -1,7 +1,8 @@
 import FastImage from 'react-native-fast-image';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {strings} from '../../assets/strings';
 function NoGames() {
+  const color = '#000';
   return (
     <View style={{alignItems: 'center'}}>
       <FastImage
@@ -10,28 +11,21 @@ function NoGames() {
         resizeMode={FastImage.resizeMode.contain}
       />
       <TouchableOpacity>
-        <Text
-          style={{
-            fontSize: 20,
-            color: '#fff',
-            textAlign: 'center',
-            marginTop: 15,
-          }}>
+        <Text style={[s.text, {color: color, margin: 15}]}>
           {strings.no_games}
         </Text>
 
-        <Text
-          style={{
-            fontSize: 20,
-            color: '#fff',
-            textAlign: 'center',
-            marginTop: 5,
-          }}>
-          {strings.adicione_ja}
-        </Text>
+        <Text style={[s.text, {color: color}]}>{strings.adicione_ja}</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
+const s = StyleSheet.create({
+  text: {
+    fontSize: 20,
+    textAlign: 'center',
+  },
+});
 
 export default NoGames;

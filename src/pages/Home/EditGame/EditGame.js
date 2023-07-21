@@ -1,8 +1,6 @@
 import {ScrollView, TouchableOpacity, Text, Image, Alert} from 'react-native';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useContext, useMemo} from 'react';
 import {AuthContext} from '../../../contexts/AuthContext';
-import {AppContext} from '../../../contexts/AppContext';
-import api from '../../../services/api';
 import Icon from 'react-native-vector-icons/AntDesign';
 import PhotoIcon from 'react-native-vector-icons/MaterialIcons';
 import {strings} from '../../../assets/strings';
@@ -12,76 +10,157 @@ import {useRoute} from '@react-navigation/native';
 import EditInput from '../../../assets/components/EditInput';
 import {InputView, Label} from '../../../assets/components/EditInput';
 import Head from '../../Profile/Header';
-import {Footer, Header, MainView, s, Body, Title} from './style';
+import {MainView, s, Body} from './style';
+import {PacmanIndicator} from 'react-native-indicators';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 export default function EditGame() {
   const route = useRoute();
   const {user, updateInfo, setUpdateInfo} = useContext(AuthContext);
-  const [data, setData] = useState([]);
+  const [data] = useState([
+    {key: 1, value: 'XBOX'},
+    {key: 2, value: 'XBOX 360'},
+    {key: 3, value: 'XBOX ONE'},
+    {key: 4, value: 'PlayStation 1'},
+    {key: 5, value: 'PlayStation 2'},
+    {key: 6, value: 'PlayStation 3'},
+    {key: 7, value: 'PlayStation 4'},
+    {key: 8, value: 'PlayStation 5'},
+    {key: 9, value: 'PPPSSPP'},
+    {key: 10, value: 'GBA'},
+    {key: 11, value: 'SNES'},
+    {key: 12, value: 'GAMEBOY COLOR'},
+    {key: 13, value: 'MAME'},
+    {key: 14, value: 'MEGA DRIVE'},
+    {key: 15, value: 'STEAM'},
+    {key: 16, value: 'XBOX CLOUD'},
+  ]);
   const [gameId] = useState(route.params.gameId);
   const [gameCover, setCover] = useState(route.params.gameCover);
+  const [copyOfGameCover, setCopyOfGameCover] = useState(gameCover);
   const [gameName, setGameName] = useState(route.params.gameName);
+  const [gameDescription, setGameDescription] = useState(
+    route.params.gameDescription,
+  );
   const [gameFinishedDate, setGameFinishedDate] = useState(
     route.params.gameFinishedDate,
   );
+  const [isLoadingOnSaving, setLoadingOnSaving] = useState(false);
   const [consoleId, setConsoleId] = useState(route.params.consoleId);
-
+  const [consoleName, setConsoleName] = useState('');
   const [selected, setSelected] = useState(String(consoleId));
 
-  useEffect(() => {
-    console.log(consoleId);
-    loadConsoles();
+  useMemo(() => {
+    if (consoleId == 1) {
+      setConsoleName('XBOX');
+    } else if (consoleId == 2) {
+      setConsoleName('XBOX 360');
+    } else if (consoleId == 3) {
+      setConsoleName('XBOX ONE');
+    } else if (consoleId == 4) {
+      setConsoleName('PlayStation 1');
+    } else if (consoleId == 5) {
+      setConsoleName('PlayStation 2');
+    } else if (consoleId == 6) {
+      setConsoleName('PlayStation 3');
+    } else if (consoleId == 7) {
+      setConsoleName('PlayStation 4');
+    } else if (consoleId == 8) {
+      setConsoleName('PlayStation 5');
+    } else if (consoleId == 9) {
+      setConsoleName('PPPSSPP');
+    } else if (consoleId == 10) {
+      setConsoleName('GBA');
+    } else if (consoleId == 11) {
+      setConsoleName('SNES');
+    } else if (consoleId == 12) {
+      setConsoleName('GAMEBOY COLOR');
+    } else if (consoleId == 13) {
+      setConsoleName('MAME');
+    } else if (consoleId == 14) {
+      setConsoleName('MEGA DRIVE');
+    } else if (consoleId == 15) {
+      setConsoleName('STEAM');
+    } else if (consoleId == 16) {
+      setConsoleName('XBOX CLOUD');
+    }
   }, []);
+
   const options = {
-    title: 'Selecione uma imagem',
+    title: strings.select_image,
     storageOptions: {
       skipBackup: true,
       path: 'images',
     },
   };
-  async function editGame() {
-    const formData = new FormData();
-    formData.append('capa', {
-      uri: gameCover,
-      type: 'image/jpeg',
-      name: 'img-' + Date.now(),
-    });
-    formData.append('id_usuario', user.id);
-    formData.append('id_game', gameId);
-    formData.append('id_console', Number(selected));
-    formData.append('nome', gameName);
-    formData.append('finisheddate', gameFinishedDate);
-    await api
-      .post('edit/game', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${user.token}`,
-        },
-      })
-      .then(r => {
-        console.log(r.data);
-        setUpdateInfo(!updateInfo);
-        Alert.alert(strings.game_updated);
-      })
-      .catch(async e => {
-        console.log(`${e} - pages/EditGame/editGame()`);
-        await api
-          .post('edit/game', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${user.token}`,
-            },
-          })
-          .then(r => {
-            console.log(r.data);
-            setUpdateInfo(!updateInfo);
-            Alert.alert(strings.game_updated);
-          })
-          .catch(e => {
-            console.log(`${e} - pages/EditGame/editGame()`);
-          });
-      });
-  }
 
+  async function editGameOnFirestore(caminho, miliseconds) {
+    try {
+      if (caminho !== '') {
+        await firestore()
+          .collection('games')
+          .doc(gameId)
+          .update({
+            name: gameName,
+            description: gameDescription,
+            cover: caminho,
+            console: Number(selected),
+            finishedDate: gameFinishedDate,
+            createdAt: Number(miliseconds),
+          });
+      } else {
+        console.log('CAMINHO VAZIO');
+        await firestore()
+          .collection('games')
+          .doc(gameId)
+          .update({
+            name: gameName,
+            description: gameDescription,
+            console: Number(selected),
+            finishedDate: gameFinishedDate,
+            createdAt: Number(miliseconds),
+          });
+      }
+
+      console.log('sucesso');
+      setUpdateInfo(!updateInfo);
+      Alert.alert(strings.game_updated);
+    } catch (error) {
+      Alert.alert(strings.error_on_updating_game);
+    } finally {
+      setLoadingOnSaving(false);
+    }
+  }
+  async function editGame() {
+    const miliseconds = String(Date.now());
+    if (copyOfGameCover !== gameCover) {
+      try {
+        const storageRef = await storage()
+          .ref('users/games')
+          .child(miliseconds);
+        console.log(storageRef); //ok
+        if (gameCover.trim() !== '') {
+          setLoadingOnSaving(true);
+          await storageRef.putFile(gameCover);
+          const caminho = await storageRef.getDownloadURL();
+          setCopyOfGameCover(caminho);
+          console.log('caminho: ' + caminho);
+          await editGameOnFirestore(caminho, miliseconds);
+        } else {
+          Alert.alert('Esolha a capa do game!');
+        }
+      } catch (error) {
+        console.log('erro: ' + error);
+        Alert.alert('Aconteceu algum erro ao adicionar o game!');
+      } finally {
+        setLoadingOnSaving(false);
+      }
+    } else {
+      console.log('are equal');
+      setLoadingOnSaving(true);
+      await editGameOnFirestore('', miliseconds);
+    }
+  }
   async function launchLibrary() {
     launchImageLibrary(options, async response => {
       if (response.didCancel) {
@@ -98,27 +177,8 @@ export default function EditGame() {
     });
   }
 
-  async function loadConsoles() {
-    await api
-      .get('/consoles')
-      .then(r => {
-        // console.log(r.data.consoles);
-        //   setConsoles(r.data.consoles);
-
-        let newArray = r.data.consoles.map(item => {
-          console.log(item);
-          return {key: item.id, value: item.nome};
-        });
-        //Set Data Variable
-        setData(newArray);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  }
-
   return (
-    <ScrollView style={{flex: 1, backgroundColor: '#000'}}>
+    <ScrollView style={s.scrollview}>
       <MainView>
         <Head marginTop={10} title={'Editando ' + gameName} />
         <Body>
@@ -160,7 +220,7 @@ export default function EditGame() {
             <Label>{strings.plataform_label}</Label>
             <SelectList
               //   onSelect={() => alert(selected)}
-              placeholder="Selecionar"
+              placeholder={consoleName}
               setSelected={setSelected}
               fontFamily="lato"
               data={data}
@@ -169,8 +229,15 @@ export default function EditGame() {
               inputStyles={{
                 color: '#fff',
               }}
-              dropdownTextStyles={{color: '#fff'}}
+              dropdownTextStyles={{color: '#000'}}
               arrowicon={<Icon name="down" color="#fff" size={20} />}
+            />
+            <EditInput
+              label={strings.finished_date_label}
+              placeholderText={strings.finished_date_placeholder}
+              placeholderTextColor="#000"
+              value={gameDescription}
+              setValue={setGameDescription}
             />
             <EditInput
               label={strings.finished_date_label}
@@ -181,9 +248,17 @@ export default function EditGame() {
             />
           </InputView>
 
-          <TouchableOpacity onPress={editGame} style={[s.btn, {marginTop: 15}]}>
-            <Text style={[s.btnText, {fontSize: 20}]}>{strings.save_edit}</Text>
-          </TouchableOpacity>
+          {isLoadingOnSaving ? (
+            <PacmanIndicator size={40} color="#000" />
+          ) : (
+            <TouchableOpacity
+              onPress={editGame}
+              style={[s.btn, {marginTop: 15}]}>
+              <Text style={[s.btnText, {fontSize: 20}]}>
+                {strings.save_edit}
+              </Text>
+            </TouchableOpacity>
+          )}
         </Body>
       </MainView>
     </ScrollView>

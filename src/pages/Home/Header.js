@@ -7,11 +7,11 @@ import {SkypeIndicator} from 'react-native-indicators';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 function Header() {
-  const [isLoadingPhoto, setLoadingPhoto] = useState(true);
-  const [profilePhoto, setProfilePhoto] = useState('');
-  const nav = useNavigation();
   const {user, username} = useContext(AuthContext);
-  const [_username, setUsername] = useState(username);
+  const [isLoadingPhoto, setLoadingPhoto] = useState(true);
+  const [profilePhoto, setProfilePhoto] = useState(user.profilePhoto);
+  const nav = useNavigation();
+  const [username_, setUsername] = useState(username);
   const isFocused = useIsFocused();
   function goToProfile() {
     nav.navigate('Profile');
@@ -44,12 +44,19 @@ function Header() {
               colors={['#4EF2F6', '#09168C', '#F8095A']}
               style={{
                 borderRadius: 35,
-                height: 70,
-                width: 70,
+                height: 52,
+                width: 52,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <ProfileIcon source={{uri: profilePhoto}} />
+              {profilePhoto == null ? (
+                <ProfileIcon
+                  style={{marginTop: 5}}
+                  source={require('../../assets/img/user_profile.png')}
+                />
+              ) : (
+                <ProfileIcon source={{uri: profilePhoto}} />
+              )}
             </LinearGradient>
           )}
         </TouchableOpacity>
@@ -72,8 +79,8 @@ function Header() {
 export default Header;
 
 const HeaderView = styled.View`
-  height: 100px;
-  background-color: black;
+  height: 80px;
+  background-color: #fff;
   flex-direction: row;
   padding-left: 20px;
   padding-right: 20px;
@@ -81,19 +88,19 @@ const HeaderView = styled.View`
   justify-content: space-between;
 `;
 const ProfileIcon = styled.Image`
-  height: 63px;
-  width: 63px;
+  height: 50px;
+  width: 50px;
   border-radius: 31px;
 `;
 const Name = styled.Text`
   font-size: 20px;
   font-weight: 600;
-  color: #fff;
+  color: #000;
 `;
 const Username = styled.Text`
   font-size: 17px;
   font-weight: 500;
-  color: #fff;
+  color: #000;
 `;
 
 const PremiumIcon = styled.Image`

@@ -20,10 +20,10 @@ import {useNavigation} from '@react-navigation/native';
 function SignUp() {
   const nav = useNavigation();
   const {signUp} = useContext(AuthContext);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState('dede');
+  const [email, setEmail] = useState('dede@gmail.com');
+  const [username, setUsername] = useState('gamestate');
+  const [password, setPassword] = useState('123456');
 
   function goToLogin() {
     nav.navigate('Login');
@@ -36,10 +36,14 @@ function SignUp() {
       username.trim() !== ''
     ) {
       const response = await signUp(name, email, password, username);
-      if (response == 406) {
-        Alert.alert(strings.err_invalid_password);
-      } else if (response == 404) {
+      if (response == 400) {
         Alert.alert(strings.err_invalid_email);
+      } else if (response == 406) {
+        Alert.alert(strings.email_already_in_use);
+      } else if (response == 411) {
+        Alert.alert(strings.weak_password);
+      } else if (response == 500) {
+        Alert.alert(strings.intern_error);
       } else if (response == 200) {
         Alert.alert(strings.game_state_title, strings.account_created, [
           {text: strings.thats_it, onPress: () => goToLogin()},
@@ -77,13 +81,13 @@ function SignUp() {
           setValue={setName}
           icon={<Icon name="user" color={colors.game_title} size={25} />}
         />
-        <Input
+        {/* <Input
           color={colors.game_title}
           placeholder={strings.username_label}
           value={username}
           setValue={setUsername}
           icon={<Icon name="user" color={colors.game_title} size={25} />}
-        />
+        /> */}
 
         <Input
           color={colors.btn_editar}

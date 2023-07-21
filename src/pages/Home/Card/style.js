@@ -3,11 +3,9 @@ import {StyleSheet} from 'react-native';
 const s = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
-    flexDirection: 'column',
+    backgroundColor: '#fff',
   },
   cover: {
-    height: 300,
     margin: 10,
   },
   title: {

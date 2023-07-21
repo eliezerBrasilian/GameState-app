@@ -35,12 +35,12 @@ const strings = {
   fill_all: 'Preencha todos os campos :(',
   err_invalid_email: 'Este email é inválido :(',
   err_invalid_password: 'A senha está incorreta :(',
-  url_production: 'http://137.184.26.92',
+  url_production: 'http://137.184.26.92:80',
   url_localhost: 'http://192.168.100.31:80',
-  //url_localhost: 'http://192.168.43.144:80',
   save_edit: 'Salvar edição',
   edit_cover: 'Editar capa',
   game_updated: 'Jogo atualizado com sucesso :)',
+  error_on_updating_game: 'Falha ao editar o game',
   dont_have_account: 'Não tenho conta',
   already_have_an_account: 'Já tenho minha conta',
   sign_up: 'Cadastrar',
@@ -58,6 +58,15 @@ const strings = {
   game_i_finished_name: 'Haha, zerei ',
   gamestate_link:
     'Eu uso o Gamestate pra registrar os games que eu finalizo, link',
+  weak_password: 'A senha está muito curta :(',
+  email_already_in_use: 'Este email já está em uso :(',
+  intern_error:
+    'Erro interno ao criar sua conta, tente novamente mais tarde 😢',
+  user_not_found: 'Este email não está cadastrado :(',
+  too_many_requests: 'Aguarde um pouco...você fez muitas tentativas ;)',
+  game_deleted: 'Jogo deletado com sucesso!',
+  error_on_deleting_game: 'Erro ao deletar o game :(',
+  wait: 'Aguarde ...',
 };
 
 export {strings};

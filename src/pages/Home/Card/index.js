@@ -3,34 +3,87 @@ import {
   TouchableOpacity,
   Image,
   Text,
-  ImageBackground,
   StyleSheet,
+  Alert,
+  ToastAndroid,
 } from 'react-native';
-import {useState, useContext, useEffect, useRef} from 'react';
+import {useState, useContext, useMemo, useRef, useEffect} from 'react';
 import {AuthContext} from '../../../contexts/AuthContext';
 import {strings} from '../../../assets/strings';
-import api from '../../../services/api';
 import ShareIcon from 'react-native-vector-icons/FontAwesome';
-import {useNavigation, useIsFocused} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {s} from './style';
 import Share from 'react-native-share';
 import ViewShot, {captureRef} from 'react-native-view-shot';
-import {BarIndicator} from 'react-native-indicators';
-function Card({data}) {
+import firestore from '@react-native-firebase/firestore';
+function Card(props) {
   const viewRef = useRef(null);
   const nav = useNavigation();
-  const {updateInfo, setUpdateInfo} = useContext(AuthContext);
-  let {nome, capa, id, finisheddate, nome_console, id_console} = data;
-  const [gameName] = useState(nome);
-  const [gameCover] = useState(capa);
-  const [gameId] = useState(id);
-  const [gameFinishedDate] = useState(finisheddate);
-  const [consoleName] = useState(nome_console);
-  const [consoleId] = useState(id_console);
-  const [isLoadingOnShare, setLoadingOnShare] = useState(false);
+  const {updateInfo, setUpdateInfo, user} = useContext(AuthContext);
+  const [gameId] = useState(props.data.key);
+  const [consoleId] = useState(props.data.console);
+  const [gameName] = useState(props.data.name);
+  const [gameCover] = useState(props.data.cover);
+  const [gameDescription] = useState(props.data.description);
+  const [gameFinishedDate] = useState(props.data.finishedDate);
+  const [consoleName, setConsoleName] = useState('');
+  const [imageSize, setImageSize] = useState(null);
+  const [isImageLoaded, setImageLoaded] = useState(false);
+
+  function handleImageLoad(e) {
+    console.log('carregando');
+    const {width, height} = e.nativeEvent;
+    setImageLoaded(true);
+  }
+  useEffect(() => {
+    Image.getSize(gameCover, (width, height) => {
+      console.log('aqui');
+      setImageSize({width: width, height: height});
+      setImageLoaded(true);
+    });
+  }, [gameCover]);
+  useMemo(() => {
+    if (consoleId == 1) {
+      setConsoleName('XBOX');
+    } else if (consoleId == 2) {
+      setConsoleName('XBOX 360');
+    } else if (consoleId == 3) {
+      setConsoleName('XBOX ONE');
+    } else if (consoleId == 4) {
+      setConsoleName('PlayStation 1');
+    } else if (consoleId == 5) {
+      setConsoleName('PlayStation 2');
+    } else if (consoleId == 6) {
+      setConsoleName('PlayStation 3');
+    } else if (consoleId == 7) {
+      setConsoleName('PlayStation 4');
+    } else if (consoleId == 8) {
+      setConsoleName('PlayStation 5');
+    } else if (consoleId == 9) {
+      setConsoleName('PPPSSPP');
+    } else if (consoleId == 10) {
+      setConsoleName('GBA');
+    } else if (consoleId == 11) {
+      setConsoleName('SNES');
+    } else if (consoleId == 12) {
+      setConsoleName('GAMEBOY COLOR');
+    } else if (consoleId == 13) {
+      setConsoleName('MAME');
+    } else if (consoleId == 14) {
+      setConsoleName('MEGA DRIVE');
+    } else if (consoleId == 15) {
+      setConsoleName('STEAM');
+    } else if (consoleId == 16) {
+      setConsoleName('XBOX CLOUD');
+    }
+  }, []);
+
   const handleCapture = async () => {
-    setLoadingOnShare(true);
-    await captureRef(viewRef, {format: 'png', quality: 0.8})
+    ToastAndroid.show(strings.wait, ToastAndroid.SHORT);
+    await captureRef(viewRef, {
+      format: 'jpg',
+      quality: 1.0,
+    })
       .then(uri => {
         const description = `${strings.game_i_finished_name} ${gameName}. ${strings.gamestate_link}`;
         shareImage(uri, description);
@@ -50,96 +103,82 @@ function Card({data}) {
       console.log('Imagem compartilhada com sucesso:');
     } catch (e) {
       console.error('Erro ao compartilhar imagem:', e);
-    } finally {
-      setLoadingOnShare(true);
     }
   };
+
+  async function deleteGame() {
+    try {
+      await firestore().collection('games').doc(gameId).delete();
+      Alert.alert(strings.game_deleted);
+    } catch (error) {
+      Alert.alert(strings.error_on_deleting_game);
+    }
+  }
   function editGamePopUp() {
     nav.navigate('PopUpEditGame', {
-      gameId: Number(gameId),
+      gameId: String(gameId),
       gameCover: String(gameCover),
       gameFinishedDate: String(gameFinishedDate),
+      gameDescription: String(gameDescription),
       gameName: String(gameName),
       consoleId: Number(consoleId),
     });
   }
 
-  async function deleteGame() {
-    console.log('deletar: ' + gameId);
-    await api
-      .post(`/game/${gameId}`)
-      .then(response => {
-        console.log(response.data);
-        setUpdateInfo(!updateInfo);
-      })
-      .catch(e => {
-        console.log(e);
-        setUpdateInfo(!updateInfo);
-        console.log(updateInfo);
-      });
-  }
   return (
     <View style={s.container}>
-      <ViewShot ref={viewRef}>
+      <ViewShot ref={viewRef} style={s.container}>
         <View style={s.cover}>
-          <Image
-            source={{uri: gameCover}}
-            style={{
-              height: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 10,
-            }}
-            resizeMode="cover"
-          />
+          {isImageLoaded && (
+            <Image
+              source={{uri: gameCover}}
+              onLoadStart={handleImageLoad}
+              onLoadEnd={handleImageLoad}
+              style={{
+                borderRadius: 10,
+                flex: 1,
+                aspectRatio: imageSize.width / imageSize.height,
+              }}
+              resizeMode="cover"
+            />
+          )}
 
           <View
             style={{
               ...StyleSheet.absoluteFillObject,
-              alignItems: 'center',
-              justifyContent: 'center',
+              alignItems: 'flex-end',
+              paddingTop: 50,
+              paddingRight: 7,
             }}>
-            <TouchableOpacity onPress={handleCapture}>
-              <ShareIcon name="share-alt" size={50} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={s.footer}>
-          <Text style={s.title}>{gameName}</Text>
-          <View style={s.footer_top}>
-            <Image
-              style={s.icone}
-              source={require('../../../assets/img/manete_.png')}
-              resizeMode="contain"
-            />
-            <Text style={[s.title, {fontSize: 17}]}>{consoleName}</Text>
-          </View>
-          {finisheddate !== '' && (
-            <View style={s.footer_top}>
-              <Image
-                style={s.icone}
-                source={require('../../../assets/img/finished_.png')}
-                resizeMode="contain"
-              />
-              <Text style={[s.title, {fontSize: 16, fontWeight: '500'}]}>
-                {strings.finished_at} {gameFinishedDate}
-              </Text>
+            <View
+              style={{
+                backgroundColor: 'rgba(204, 187, 239, 0.8)',
+                padding: 10,
+                rowGap: 20,
+              }}>
+              <TouchableOpacity activeOpacity={1} onPress={handleCapture}>
+                <ShareIcon name="share-alt" size={25} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={editGamePopUp}>
+                <ShareIcon name="edit" size={25} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={deleteGame}>
+                <ShareIcon name="trash" size={25} color="#fff" />
+              </TouchableOpacity>
             </View>
+          </View>
+          {gameDescription && (
+            <>
+              <Text style={{color: '#000', fontWeight: '700', fontSize: 19}}>
+                {consoleName}
+              </Text>
+              <Text numberOfLines={2} style={{color: '#000', fontSize: 16}}>
+                {gameDescription}
+              </Text>
+            </>
           )}
         </View>
       </ViewShot>
-      <View style={s.btns}>
-        <TouchableOpacity
-          onPress={editGamePopUp}
-          style={[s.btn, {backgroundColor: '#2B2A4C'}]}>
-          <Text style={s.btnText}>{strings.edit}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={deleteGame}
-          style={[s.btn, {backgroundColor: '#B31312'}]}>
-          <Text style={s.btnText}>{strings.delete}</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }

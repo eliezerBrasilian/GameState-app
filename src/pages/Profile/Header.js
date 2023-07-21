@@ -32,7 +32,7 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    color: '#fff',
+    color: '#000',
     fontWeight: '700',
   },
 });

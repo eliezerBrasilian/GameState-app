@@ -1,23 +1,15 @@
 import {styled} from 'styled-components';
 import {StyleSheet} from 'react-native';
+const textColor = '#000';
 const s = StyleSheet.create({
+  scrollview: {flex: 1, backgroundColor: '#fff'},
   gameCoverImg: {
     height: 200,
     borderRadius: 20,
   },
-  inputContainer: {
-    height: 50,
-    padding: 10,
-    borderBottomWidth: 2,
-    borderBottomColor: 'red',
-    width: '100%',
-    borderRadius: 10,
-    color: '#fff',
-    fontSize: 17,
-  },
 
   btn: {
-    backgroundColor: 'black',
+    backgroundColor: '#000',
     height: 50,
     padding: 10,
     alignItems: 'center',
@@ -28,7 +20,7 @@ const s = StyleSheet.create({
   btnText: {
     fontSize: 17,
     color: '#fff',
-    fontWeight: '400',
+    fontWeight: '600',
   },
   dropdown: {
     height: 50,
@@ -42,7 +34,7 @@ const s = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 16,
-    color: '#fff',
+    color: textColor,
   },
   selectedTextStyle: {
     fontSize: 16,
@@ -54,7 +46,7 @@ const s = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
-    color: '#fff',
+    color: textColor,
   },
 });
 
@@ -66,17 +58,10 @@ const MainView = styled.View`
 const Header = styled.View`
   align-items: center;
 `;
-const Title = styled.Text`
-  color: #fff;
-  font-weight: 700;
-  font-size: 24px;
-`;
 
 const Body = styled.View`
   flex: 1;
   margin-top: 10px;
 `;
 
-const Footer = styled.View``;
-
-export {MainView, Header, Footer, Title, Body, s};
+export {MainView, Header, Body, s};
