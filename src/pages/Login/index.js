@@ -19,8 +19,8 @@ import {useNavigation} from '@react-navigation/native';
 function Login() {
   const nav = useNavigation();
   const {login} = useContext(AuthContext);
-  const [email, setEmail] = useState('dede@gmail.com');
-  const [password, setPassword] = useState('123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   function goToSignUp() {
     nav.navigate('SignUp');

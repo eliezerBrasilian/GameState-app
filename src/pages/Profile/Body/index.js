@@ -9,7 +9,7 @@ import {
 import {colors} from '../../../assets/colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {strings} from '../../../assets/strings';
-import {useContext, useState, useEffect} from 'react';
+import {useContext, useState, useEffect, useMemo, useRef} from 'react';
 import {AuthContext} from '../../../contexts/AuthContext';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {SkypeIndicator} from 'react-native-indicators';
@@ -18,12 +18,32 @@ import LinearGradient from 'react-native-linear-gradient';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import {s} from './style';
+import * as Animatable from 'react-native-animatable';
 function Body() {
   const {user, signOut, getUserDataFromFirestore, writeUserData} =
     useContext(AuthContext);
   const [profilePhoto, setProfilePhoto] = useState(user.profilePhoto);
   const [username, setUsername] = useState(user.username);
+  const [usernameCopy, setUsernameCopy] = useState(user.username);
+  const [isShowingAlterButton, setShowingAlterButton] = useState(false);
   const [isLoadingPhoto, setLoadingPhoto] = useState(true);
+  const touchableOpacityRef = useRef(null);
+
+  useEffect(() => {
+    const startAnimation = () => {
+      touchableOpacityRef.current?.animate(
+        {
+          0: {scale: 0.8, translateY: 100},
+          0.5: {scale: 1.1, translateY: 0},
+          1: {scale: 1.0, translateY: 1},
+        },
+        2000,
+      ); // Duração da animação: 1000 milissegundos (1 segundo)
+    };
+    const animationTimeout = setTimeout(startAnimation, 300); // Atraso de 1 segundo (1000 milissegundos)
+    return () => clearTimeout(animationTimeout);
+  }, []);
+
   useEffect(() => {
     async function getImageFromStorage() {
       try {
@@ -39,6 +59,11 @@ function Body() {
     getImageFromStorage();
   }, []);
 
+  useMemo(() => {
+    if (username != usernameCopy) {
+      setShowingAlterButton(true);
+    }
+  }, [username]);
   function handleSignOut() {
     signOut();
   }
@@ -52,20 +77,22 @@ function Body() {
   };
 
   async function updateUsernameOnFirestore() {
-    await firestore()
-      .collection('users')
-      .doc(user.user_id)
-      .update({
-        username: username,
-      })
-      .then(async r => {
-        console.log('sucesso');
-        const userData = await getUserDataFromFirestore(user.user_id);
-        await writeUserData(userData);
-      })
-      .catch(e => {
-        console.log('erro: ' + error);
-      });
+    if (username !== '') {
+      await firestore()
+        .collection('users')
+        .doc(user.user_id)
+        .update({
+          username: username,
+        })
+        .then(async r => {
+          console.log('sucesso');
+          const userData = await getUserDataFromFirestore(user.user_id);
+          await writeUserData(userData);
+        })
+        .catch(e => {
+          console.log('erro: ' + error);
+        });
+    }
   }
   async function updatePhotoOnFirestore(imageURL) {
     await firestore()
@@ -171,30 +198,32 @@ function Body() {
             />
             <Icon name="pencil" size={20} color={colors.btn_editar} />
           </View>
-          <TouchableOpacity
-            onPress={updateUsernameOnFirestore}
-            style={s.saveUsernameBtn}>
-            <Text style={s.saveUsernameText}>{strings.alter_username}</Text>
-          </TouchableOpacity>
+          {isShowingAlterButton && (
+            <TouchableOpacity
+              onPress={updateUsernameOnFirestore}
+              style={s.saveUsernameBtn}>
+              <Text style={s.saveUsernameText}>{strings.alter_username}</Text>
+            </TouchableOpacity>
+          )}
         </View>
+        <Animatable.View ref={touchableOpacityRef}>
+          <TouchableOpacity style={s.btnDestroyAds}>
+            <Text style={[s.btnText, {color: '#000', fontSize: 18}]}>
+              {strings.destroy_ads}
+            </Text>
+            <Image
+              source={require('../../../assets/img/premium_.png')}
+              style={{height: 45, width: 45}}
+            />
+          </TouchableOpacity>
+        </Animatable.View>
 
-        <TouchableOpacity style={s.btnDestroyAds}>
-          <Text style={[s.btnText, {color: '#000', fontSize: 18}]}>
-            {strings.destroy_ads}
-          </Text>
-          <Image
-            source={require('../../../assets/img/premium_.png')}
-            style={{height: 45, width: 45}}
-          />
-        </TouchableOpacity>
         <TouchableOpacity
           onPress={handleSignOut}
           style={[
             s.btnDestroyAds,
             {
-              backgroundColor: 'transparent',
-              borderColor: colors.game_title,
-              borderWidth: 2,
+              backgroundColor: colors.game_title,
               paddingVertical: 10,
             },
           ]}>

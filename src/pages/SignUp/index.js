@@ -20,10 +20,10 @@ import {useNavigation} from '@react-navigation/native';
 function SignUp() {
   const nav = useNavigation();
   const {signUp} = useContext(AuthContext);
-  const [name, setName] = useState('dede');
-  const [email, setEmail] = useState('dede@gmail.com');
-  const [username, setUsername] = useState('gamestate');
-  const [password, setPassword] = useState('123456');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   function goToLogin() {
     nav.navigate('Login');
@@ -79,15 +79,9 @@ function SignUp() {
           placeholder={strings.name}
           value={name}
           setValue={setName}
+          autoCapitalize="words"
           icon={<Icon name="user" color={colors.game_title} size={25} />}
         />
-        {/* <Input
-          color={colors.game_title}
-          placeholder={strings.username_label}
-          value={username}
-          setValue={setUsername}
-          icon={<Icon name="user" color={colors.game_title} size={25} />}
-        /> */}
 
         <Input
           color={colors.btn_editar}

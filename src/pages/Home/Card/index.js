@@ -16,6 +16,14 @@ import {s} from './style';
 import Share from 'react-native-share';
 import ViewShot, {captureRef} from 'react-native-view-shot';
 import firestore from '@react-native-firebase/firestore';
+import * as Animatable from 'react-native-animatable';
+import {
+  InterstitialAd,
+  AdEventType,
+  TestIds,
+} from 'react-native-google-mobile-ads';
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : strings.interstitial_ad;
+const interstitial = InterstitialAd.createForAdRequest(adUnitId);
 function Card(props) {
   const viewRef = useRef(null);
   const nav = useNavigation();
@@ -29,12 +37,27 @@ function Card(props) {
   const [consoleName, setConsoleName] = useState('');
   const [imageSize, setImageSize] = useState(null);
   const [isImageLoaded, setImageLoaded] = useState(false);
+  const touchableOpacityRef = useRef(null);
 
-  function handleImageLoad(e) {
-    console.log('carregando');
-    const {width, height} = e.nativeEvent;
-    setImageLoaded(true);
-  }
+  useEffect(() => {
+    interstitial.load();
+  }, []);
+
+  const startAnimation = () => {
+    touchableOpacityRef.current?.animate(
+      {
+        0: {scale: 0.8, translateY: 0},
+        0.5: {scale: 1.1, translateY: 50},
+        1: {scale: 1.0, translateY: 0},
+      },
+      1000,
+    );
+  };
+  useEffect(() => {
+    startAnimation();
+    return () => clearTimeout(animationTimeout);
+  }, []);
+
   useEffect(() => {
     Image.getSize(gameCover, (width, height) => {
       console.log('aqui');
@@ -42,6 +65,14 @@ function Card(props) {
       setImageLoaded(true);
     });
   }, [gameCover]);
+
+  function handleImageLoad(e) {
+    console.log('carregando');
+    const {width, height} = e.nativeEvent;
+    startAnimation();
+    setImageLoaded(true);
+  }
+
   useMemo(() => {
     if (consoleId == 1) {
       setConsoleName('XBOX');
@@ -88,7 +119,10 @@ function Card(props) {
         const description = `${strings.game_i_finished_name} ${gameName}. ${strings.gamestate_link}`;
         shareImage(uri, description);
       })
-      .catch(error => console.error('Erro ao capturar a imagem:', error));
+      .catch(error => console.error('Erro ao capturar a imagem:', error))
+      .finally(() => {
+        startAnimation();
+      });
   };
 
   const shareImage = (uri, description) => {
@@ -103,6 +137,12 @@ function Card(props) {
       console.log('Imagem compartilhada com sucesso:');
     } catch (e) {
       console.error('Erro ao compartilhar imagem:', e);
+    } finally {
+      if (interstitial.loaded) {
+        interstitial.show();
+      } else {
+        interstitial.load();
+      }
     }
   };
 
@@ -150,22 +190,24 @@ function Card(props) {
               paddingTop: 50,
               paddingRight: 7,
             }}>
-            <View
-              style={{
-                backgroundColor: 'rgba(204, 187, 239, 0.8)',
-                padding: 10,
-                rowGap: 20,
-              }}>
-              <TouchableOpacity activeOpacity={1} onPress={handleCapture}>
-                <ShareIcon name="share-alt" size={25} color="#fff" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={editGamePopUp}>
-                <ShareIcon name="edit" size={25} color="#fff" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={deleteGame}>
-                <ShareIcon name="trash" size={25} color="#fff" />
-              </TouchableOpacity>
-            </View>
+            <Animatable.View ref={touchableOpacityRef}>
+              <View
+                style={{
+                  backgroundColor: 'rgba(204, 187, 239, 0.8)',
+                  padding: 10,
+                  rowGap: 20,
+                }}>
+                <TouchableOpacity activeOpacity={1} onPress={handleCapture}>
+                  <ShareIcon name="share-alt" size={25} color="#fff" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={editGamePopUp}>
+                  <ShareIcon name="edit" size={25} color="#fff" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={deleteGame}>
+                  <ShareIcon name="trash" size={25} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </Animatable.View>
           </View>
           {gameDescription && (
             <>

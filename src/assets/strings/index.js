@@ -1,4 +1,6 @@
 const strings = {
+  interstitial_ad: 'ca-app-pub-4318787550457876/1122944633',
+  banner_ad: 'ca-app-pub-4318787550457876/1673608977',
   no_connection: 'Umm...parece que você está sem internet!',
   reload: 'Clique aqui para recarregar :)',
   no_games: 'Você ainda não adicionou nenhum game que você zerou :(',
@@ -11,9 +13,9 @@ const strings = {
   finished_date_label: 'Quando você zerou o game?',
   cover_placeholder: 'Link da imagem do jogo',
   game_name_placeholder: 'Digite o nome do jogo',
-  game_desc_placeholder: 'Descreva como foi zerar o game',
+  game_desc_placeholder: 'Ex: jogo de plataforma, finalizei com 2 meses...',
   plataform_placeholder: 'Steam',
-  finished_date_placeholder: 'Digite quando você zerou o game',
+  finished_date_placeholder: 'Ex: 17/05/2019 por volta de 19h',
   selecione: 'Selecione',
   all_your_games_here: 'Todos os seus games aqui',
   show_your_achieves: 'Mostre suas Conquistas ',

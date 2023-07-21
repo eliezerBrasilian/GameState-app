@@ -8,7 +8,9 @@ import OpenPopup from './OpenPopup';
 import PopUpAddGame from './PopupAddGame';
 import firestore from '@react-native-firebase/firestore';
 import FlatListHeader from './FlatlistHeader';
-
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+import {strings} from '../../assets/strings';
+const adUnitId = __DEV__ ? TestIds.BANNER : strings.banner_ad;
 function Home() {
   const {user, updateInfo, isPopUpVisible} = useContext(AuthContext);
   const [games, setGames] = useState([]);
@@ -68,6 +70,15 @@ function Home() {
           numColumns={2}
           ListHeaderComponent={<FlatListHeader amount={gamesAmount} />}
           contentContainerStyle={{padding: 10}}
+          ListFooterComponent={
+            <BannerAd
+              unitId={adUnitId}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+            />
+          }
         />
       )}
 

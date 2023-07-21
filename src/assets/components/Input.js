@@ -8,6 +8,7 @@ function Input({
   icon,
   keyboardType = 'default',
   isPassword = false,
+  autoCapitalize = 'none',
 }) {
   return (
     <InputView color={color}>
@@ -20,6 +21,7 @@ function Input({
         onChangeText={t => setValue(t)}
         keyboardType={keyboardType}
         secureTextEntry={isPassword}
+        autoCapitalize={autoCapitalize}
       />
     </InputView>
   );

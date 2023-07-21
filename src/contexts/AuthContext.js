@@ -11,20 +11,25 @@ export default function AuthProvider({children}) {
   const [updateInfo, setUpdateInfo] = useState(false);
   const [isPopUpVisible, setPopUpVisible] = useState(false);
   const [isLoadingAuth, setLoadingAuth] = useState(false);
-  const [isLoadingApp, setLoadingApp] = useState(true);
+  const [isLoadingApp, setLoadingApp] = useState(false);
   useEffect(() => {
     loadData();
   }, []);
   async function loadData() {
+    setLoadingApp(true);
     try {
       const ud = await AsyncStorage.getItem('@userData');
-      const userData = JSON.parse(ud);
-      setUser(userData);
-      setUsername(userData.username);
-      console.log('auth: ' + userData.username);
-      setLoadingApp(false);
+
+      if (ud) {
+        const userData = JSON.parse(ud);
+        setUser(userData);
+        setUsername(userData.username);
+        console.log('auth: ' + userData.username);
+      }
     } catch (error) {
       console.log(`error - AuthContext - loadData(): ${error}`);
+    } finally {
+      setLoadingApp(false);
     }
   }
   function signOut() {
