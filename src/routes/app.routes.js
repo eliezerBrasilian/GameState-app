@@ -9,9 +9,14 @@ function AppRoutes() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
+        orientation: 'portrait',
       }}>
       <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen
+        options={{animation: 'slide_from_left'}}
+        name="Profile"
+        component={Profile}
+      />
       <Stack.Screen name="PopUpEditGame" component={PopUpEditGame} />
     </Stack.Navigator>
   );
