@@ -1,4 +1,4 @@
-import {View, FlatList} from 'react-native';
+import {View, FlatList, ActivityIndicator} from 'react-native';
 import {useContext, useEffect, useState} from 'react';
 import {AuthContext} from '../../contexts/AuthContext';
 import Header from './Header';
@@ -10,13 +10,14 @@ import firestore from '@react-native-firebase/firestore';
 import FlatListHeader from './FlatlistHeader';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import {strings} from '../../assets/strings';
+
 const adUnitId = __DEV__ ? TestIds.BANNER : strings.banner_ad;
 function Home() {
   const {user, updateInfo, isPopUpVisible} = useContext(AuthContext);
   const [games, setGames] = useState([]);
   const [gamesEmpty, setGamesEmpty] = useState(false);
   const [gamesAmount, setGamesAmount] = useState(0);
-
+  const [gamesLoaded, setLoadingGames] = useState(true);
   useEffect(() => {
     loadGames();
   }, [updateInfo]);

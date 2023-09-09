@@ -17,11 +17,7 @@ import Share from 'react-native-share';
 import ViewShot, {captureRef} from 'react-native-view-shot';
 import firestore from '@react-native-firebase/firestore';
 import * as Animatable from 'react-native-animatable';
-import {
-  InterstitialAd,
-  AdEventType,
-  TestIds,
-} from 'react-native-google-mobile-ads';
+import {InterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : strings.interstitial_ad;
 const interstitial = InterstitialAd.createForAdRequest(adUnitId);
 function Card(props) {
@@ -38,7 +34,7 @@ function Card(props) {
   const [imageSize, setImageSize] = useState(null);
   const [isImageLoaded, setImageLoaded] = useState(false);
   const touchableOpacityRef = useRef(null);
-
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   useEffect(() => {
     interstitial.load();
   }, []);
@@ -50,6 +46,10 @@ function Card(props) {
       setImageLoaded(true);
     });
   }, [gameCover]);
+
+  function expandDescription() {
+    setDescriptionExpanded(!descriptionExpanded);
+  }
 
   const startAnimation = () => {
     touchableOpacityRef.current?.animate(
@@ -208,9 +208,13 @@ function Card(props) {
               <Text style={{color: '#000', fontWeight: '700', fontSize: 19}}>
                 {consoleName}
               </Text>
-              <Text numberOfLines={2} style={{color: '#000', fontSize: 16}}>
-                {gameDescription}
-              </Text>
+              <TouchableOpacity onPress={expandDescription} activeOpacity={0.7}>
+                <Text
+                  numberOfLines={!descriptionExpanded ? 2 : undefined}
+                  style={{color: '#000', fontSize: 16}}>
+                  {gameDescription}
+                </Text>
+              </TouchableOpacity>
             </>
           )}
         </View>
