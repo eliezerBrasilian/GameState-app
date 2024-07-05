@@ -18,5 +18,5 @@ Esse aplicativo atende a usuários gamers que finalizam seus jogos e gostariam d
 
 ## Authors
 
-- [@picapau](https://github.com/eliezerBrasilian)
+- [@eliezerBrasilian](https://github.com/eliezerBrasilian)
 
