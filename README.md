@@ -1,13 +1,13 @@
 
-# Meu jogo
+# Gamestate
 
-Um aplicativo criado com carinho para você ter controle total sobre seu dinheiro. Através do kakeibo, você rastreia todos suas movimentações e consegue poupar mais dinheiro e viver mais tranquilamente.
+Esse aplicativo atende a usuários gamers que finalizam seus jogos e gostariam de um lugar para manter um registro do jogo zerado. Adicione o nome do jogo, capa e mais algumas informações e pronto, jogo registrado! 
 
 
 ## Tecnologias utilizadas
 
- - unity
- - sql
+ - ReactNative
+ - Firebase
 
 
 
