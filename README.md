@@ -13,8 +13,10 @@ Esse aplicativo atende a usuários gamers que finalizam seus jogos e gostariam d
 
 ## Screenshots
 
-![20240702_221718](https://github.com/eliezerBrasilian/GameState-app/assets/93846923/78a6d0e9-6bbc-43a0-8177-e56692c6a4cb)
+![20240707_084521](https://github.com/eliezerBrasilian/GameState-app/assets/93846923/99567e9e-8783-4636-bb57-049d71d214a4)
 
+## Aplicativo na GooglePlay
+- [baixar](https://play.google.com/store/apps/details?id=com.gamestate&hl=pt_BR)
 
 ## Authors
 
